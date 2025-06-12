@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main">
+  <section class="app-main" :class="{'is-dashboard':isDashboard}">
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" />
     </transition>
@@ -12,6 +12,11 @@ export default {
   computed: {
     key() {
       return this.$route.path
+    },
+    // 判断是否是数据看板页面
+    isDashboard() {
+      console.log(this.$route.meta.title)
+      return this.$route.meta.title === '数据看板'
     }
   }
 }
@@ -36,5 +41,9 @@ export default {
   .fixed-header {
     padding-right: 15px;
   }
+}
+
+.is-dashboard {
+  background-color: #23272d;
 }
 </style>

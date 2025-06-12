@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || '鸿蒙外设管理平台' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -35,8 +35,8 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    },
-    before: require('./mock/mock-server.js')
+    }
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -62,6 +62,16 @@ module.exports = {
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
+
+    config.module
+      .rule('fonts')
+      .test(/\.(woff2?|eot|ttf|otf)(\?.*)?$/i)
+      .use('url-loader')
+      .loader('url-loader')
+      .options({
+        limit: 4096, // 小于 4KB 的字体转为 base64
+        name: 'fonts/[name].[hash:8].[ext]'
+      })
 
     // set svg-sprite-loader
     config.module
