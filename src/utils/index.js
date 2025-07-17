@@ -115,3 +115,67 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+/**
+ * 时间解析与格式化工具函数
+ *
+ * @param {string|number|Date} time 需要格式化的原始时间
+ * @param {string} cFormat 自定义格式，默认：'{y}-{m}-{d} {h}:{i}:{s}'
+ * @param {boolean} isUTC 是否使用 UTC 时间（默认 true）
+ * @returns {string|null}
+ */
+export function parseTimeHm(time, cFormat, isUTC = true) {
+  if (arguments.length === 0 || !time) {
+    return null
+  }
+
+  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  let date
+
+  // 如果是对象，直接使用
+  if (typeof time === 'object') {
+    date = time
+  } else if (typeof time === 'string') {
+    // 处理纯数字字符串（如时间戳）
+    if (/^[0-9]+$/.test(time)) {
+      time = parseInt(time)
+    } else {
+      // Safari 不支持 '-' 分隔的 ISO 格式，替换为 '/'
+      time = time.replace(new RegExp(/-/gm), '/')
+    }
+  } else if (typeof time === 'number' && time.toString().length === 10) {
+    // 秒级时间戳转毫秒
+    time *= 1000
+  }
+
+  // 创建 Date 对象
+  date = new Date(time)
+
+  // 如果无效时间，返回 null
+  if (isNaN(date.getTime())) {
+    return null
+  }
+
+  // 获取年月日时分秒（根据是否使用 UTC）
+  const get = isUTC ? 'UTC' : ''
+  const formatObj = {
+    y: date[`get${get}FullYear`](),
+    m: date[`get${get}Month`]() + 1, // 月份从 0 开始
+    d: date[`get${get}Date`](),
+    h: date[`get${get}Hours`](),
+    i: date[`get${get}Minutes`](),
+    s: date[`get${get}Seconds`](),
+    a: date[`get${get}Day`]() // 星期几
+  }
+
+  // 替换模板中的占位符
+  const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
+    const value = formatObj[key]
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
+    return value.toString().padStart(2, '0')
+  })
+
+  return time_str
+}

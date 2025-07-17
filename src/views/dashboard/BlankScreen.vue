@@ -1,11 +1,16 @@
 <template>
-  <div ref="carouselRef" class="carousel-container" :class="{ 'screen-container-width': sidebar.opened }">
+  <div ref="appRef" class="carousel-container">
     <el-carousel
-      v-if="form.selectPage.length === 3 && form.selectPage[0].name === '鸿蒙外设认证实验室'"
+      v-if="
+        form.selectPage.length === 3 &&
+          form.selectPage[0].name === '鸿蒙外设认证实验室'
+      "
       ref="carousel"
       :autoplay="false"
-      height="868px"
+      height="1080px"
       indicator-position="none"
+      :arrow="arrow"
+      :interval="interval"
       @change="carouselChange"
     >
       <!-- @mouseenter.native="pauseCarousel"
@@ -32,15 +37,18 @@
     </el-carousel>
 
     <el-carousel
-      v-else-if="form.selectPage.length === 2 && form.selectPage[0].name === '鸿蒙外设认证实验室'"
+      v-else-if="
+        form.selectPage.length === 2 &&
+          form.selectPage[0].name === '鸿蒙外设认证实验室'
+      "
       ref="carousel"
       :autoplay="false"
-      height="868px"
+      height="1080px"
       indicator-position="none"
+      :arrow="arrow"
+      :interval="interval"
       @change="carouselChange"
     >
-      <!-- @mouseenter.native="pauseCarousel"
-      @mouseleave.native="resumeCarousel" -->
       <el-carousel-item>
         <Screen
           :operation-overview-list="operationOverviewList"
@@ -74,15 +82,18 @@
     </el-carousel>
 
     <el-carousel
-      v-else-if="form.selectPage.length === 2 && form.selectPage[0].name !== '鸿蒙外设认证实验室'"
+      v-else-if="
+        form.selectPage.length === 2 &&
+          form.selectPage[0].name !== '鸿蒙外设认证实验室'
+      "
       ref="carousel"
       :autoplay="false"
-      height="868px"
+      height="1080px"
       indicator-position="none"
+      :arrow="arrow"
+      :interval="interval"
       @change="carouselChange"
     >
-      <!-- @mouseenter.native="pauseCarousel"
-      @mouseleave.native="resumeCarousel" -->
       <el-carousel-item>
         <Details :src="form.selectPage[0].src_path" />
       </el-carousel-item>
@@ -98,15 +109,18 @@
     </el-carousel>
 
     <el-carousel
-      v-else-if="form.selectPage.length === 1 && form.selectPage[0].name === '鸿蒙外设认证实验室'"
+      v-else-if="
+        form.selectPage.length === 1 &&
+          form.selectPage[0].name === '鸿蒙外设认证实验室'
+      "
       ref="carousel"
       :autoplay="false"
-      height="868px"
+      height="1080px"
       indicator-position="none"
+      :arrow="arrow"
+      :interval="interval"
       @change="carouselChange"
     >
-      <!-- @mouseenter.native="pauseCarousel"
-      @mouseleave.native="resumeCarousel" -->
       <el-carousel-item>
         <Screen
           :operation-overview-list="operationOverviewList"
@@ -122,28 +136,38 @@
     </el-carousel>
 
     <el-carousel
-      v-else-if="form.selectPage.length === 1 && form.selectPage[0].name !== '鸿蒙外设认证实验室'"
+      v-else-if="
+        form.selectPage.length === 1 &&
+          form.selectPage[0].name !== '鸿蒙外设认证实验室'
+      "
       ref="carousel"
       :autoplay="false"
-      height="868px"
+      height="1080px"
       indicator-position="none"
+      :arrow="arrow"
+      :interval="interval"
       @change="carouselChange"
     >
-      <!-- @mouseenter.native="pauseCarousel"
-      @mouseleave.native="resumeCarousel" -->
       <el-carousel-item>
-        <Details :src="form.selectPage[0].src_path" />
+        <el-carousel-item>
+          <Details :src="form.selectPage[0].src_path" />
+        </el-carousel-item>
       </el-carousel-item>
     </el-carousel>
+    <!-- <div
+      class="pause-resume-area"
+      @mouseenter="pauseCarousel"
+      @mouseleave="resumeCarousel"
+    /> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import responsiveMixin from '@/utils/responsiveMixin'
+import drawMixin from '@/utils/drawMixin'
 // import * as echarts from 'echarts'
-import Screen from './components/Screen.vue'
-import Details from './components/Details.vue'
+import Screen from './components/ScreenBlank.vue'
+import Details from './components/DetailsBlank.vue'
 import {
   getOperationOverview,
   getCategoryOverview,
@@ -157,7 +181,7 @@ export default {
     Screen,
     Details
   },
-  mixins: [responsiveMixin],
+  mixins: [drawMixin],
   data() {
     return {
       myChart: null,
@@ -176,7 +200,7 @@ export default {
           {
             name: '实验室运营概览',
             type: 'pie',
-            radius: ['40%', '70%'],
+            radius: ['40%', '90%'],
             avoidLabelOverlap: true,
             label: {
               show: false,
@@ -196,7 +220,7 @@ export default {
           position: 'left'
         },
         grid: {
-          left: 40,
+          left: 50,
           right: 20,
           top: 30,
           bottom: 40
@@ -205,11 +229,11 @@ export default {
           data: ['适配认证中', '发证总数'],
           left: 'right',
           top: 'top',
-          itemWidth: 10,
-          itemHeight: 10,
+          itemWidth: 13,
+          itemHeight: 13,
           textStyle: {
             color: '#ffffff',
-            fontSize: 10,
+            fontSize: 12,
             fontWeight: 'lighter',
             opacity: 0.7
           }
@@ -225,7 +249,8 @@ export default {
           },
           axisLabel: {
             color: '#ffffff',
-            opacity: 0.7
+            opacity: 0.7,
+            fontSize: 15
           }
         },
         xAxis: {
@@ -233,10 +258,10 @@ export default {
           data: ['打印机', '扫描仪', '鼠标', '手写板', '其他'],
           axisLabel: {
             interval: 0,
-            color: '#ffffff'
+            color: '#ffffff',
+            fontSize: 15
           },
-          offset: 6
-
+          offset: 8
         },
         series: [
           {
@@ -248,9 +273,9 @@ export default {
               show: true,
               position: 'insideTop',
               color: '#ffffff',
-              fontSize: 9
+              fontSize: 12
             },
-            barWidth: 20,
+            barWidth: 25,
             itemStyle: {
               color: '#4eaff5'
             }
@@ -265,9 +290,9 @@ export default {
               position: 'top',
               color: '#f56c6c',
               fontWeight: 'bold',
-              fontSize: 13
+              fontSize: 16
             },
-            barWidth: 20,
+            barWidth: 25,
             itemStyle: {
               color: '#f56c6c'
             }
@@ -276,9 +301,11 @@ export default {
       },
       cooperationPartnersList: [],
       partnersOverviewList: [],
+      interval: 3000,
       currentIndex: 0,
       carouselRecordTime: 0,
-      intervalSettings: [3000, 3000, 3000, 3000],
+      intervalSettings: [30000, 30000, 30000, 30000],
+      // intervalSettings: [3000, 1500, 3000, 1500],
       timer: null,
       remainingTime: 0, // 用于记录暂停时剩余的时间
       pauseTime: null, // 记录暂停时间点
@@ -288,25 +315,20 @@ export default {
         selectionMethod: '',
         selectPage: []
       },
+      arrow: 'never',
       baseURL: process.env.VUE_APP_BASE_API
     }
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar'
-    ])
+    ...mapGetters(['sidebar', 'avatar'])
   },
-  watch: {
-    currentIndex(newVal, oldVal) {
-
-    }
-  },
+  watch: {},
 
   created() {
     if (window.location.host !== 'localhost:9528') {
       this.baseURL = window.location.origin
     }
+
     this.getOperationOverview()
     this.getCategoryOverview()
     this.getCooperationPartners()
@@ -315,46 +337,117 @@ export default {
   async mounted() {
     await this.getScreenConfig()
     this.startCustomAutoPlay()
+    this.setDocument()
+    window.addEventListener('keydown', this.handleKeyDown)
   },
   beforeDestroy() {
     this.clearTimer()
+    this.removeDocument()
+    window.removeEventListener('keydown', this.handleKeyDown)
   },
   methods: {
+    handleResize() {
+      if (!document.fullscreenElement) {
+        // 如果退出了全屏模式，可以在这里执行一些操作
+        // 例如，调整布局以适应非全屏模式
+      }
+    },
+    removeDocument() {
+      document.body.style.removeProperty('margin')
+      document.body.style.removeProperty('padding')
+      document.body.style.removeProperty('overflow')
+      document.body.style.removeProperty('width')
+      document.body.style.removeProperty('height')
+
+      window.removeEventListener('resize', this.handleResize)
+    },
+    setDocument() {
+      document.body.style.margin = '0'
+      document.body.style.padding = '0'
+      document.body.style.overflow = 'hidden'
+      document.body.style.width = '100%'
+      document.body.style.height = '100%'
+
+      window.addEventListener('resize', this.handleResize)
+    },
     startCustomAutoPlay() {
-      if (this.form.selectionMethod === '自动轮播' && this.form.selectPage.length > 1) {
+      if (
+        this.form.selectionMethod === '自动轮播' &&
+        this.form.selectPage.length > 1
+      ) {
         this.clearTimer()
         this.timer = setTimeout(() => {
           this.nextSlide()
         }, this.remainingTime || this.intervalSettings[this.currentIndex])
       }
     },
-    nextSlide() {
-      this.currentIndex = (this.currentIndex + 1) % 4
-      this.$refs.carousel.setActiveItem(this.currentIndex)
-      this.remainingTime = 0 // 重置剩余时间
-      this.startCustomAutoPlay()
+    handleKeyDown(event) {
+      // 只有左右方向键才处理
+      if (event.key === 'ArrowLeft') {
+        this.prevSlide()
+        event.preventDefault() // 阻止默认行为
+      } else if (event.key === 'ArrowRight') {
+        this.nextSlide()
+        event.preventDefault() // 阻止默认行为
+      }
     },
+
+    // 添加上一页方法
+    prevSlide() {
+      const itemCount = this.$refs.carousel?.items?.length || 0
+      if (itemCount > 0) {
+        this.currentIndex = (this.currentIndex - 1 + itemCount) % itemCount
+        this.$refs.carousel.setActiveItem(this.currentIndex)
+        this.remainingTime = 0 // 重置剩余时间
+        this.startCustomAutoPlay()
+      }
+    },
+
+    // 修改现有的nextSlide方法
+    nextSlide() {
+      const itemCount = this.$refs.carousel?.items?.length || 0
+      if (itemCount > 0) {
+        this.currentIndex = (this.currentIndex + 1) % itemCount
+        this.$refs.carousel.setActiveItem(this.currentIndex)
+        this.remainingTime = 0 // 重置剩余时间
+        this.startCustomAutoPlay()
+      }
+    },
+
+    // nextSlide() {
+    //   this.currentIndex = (this.currentIndex + 1) % 4
+    //   this.$refs.carousel.setActiveItem(this.currentIndex)
+    //   this.remainingTime = 0 // 重置剩余时间
+    //   this.startCustomAutoPlay()
+    // },
+
     pauseCarousel() {
       if (this.timer) {
         // 计算剩余时间 = 预设间隔 - (当前时间 - 开始时间)
         const elapsed = Date.now() - (this.pauseTime || Date.now())
-        this.remainingTime = Math.max(0, this.intervalSettings[this.currentIndex] - elapsed)
+        this.remainingTime = Math.max(
+          0,
+          this.intervalSettings[this.currentIndex] - elapsed
+        )
         this.clearTimer()
       }
       this.pauseTime = Date.now() // 记录暂停时间点
     },
+
     resumeCarousel() {
       if (this.remainingTime > 0) {
         this.startCustomAutoPlay()
       }
       this.pauseTime = null
     },
+
     clearTimer() {
       if (this.timer) {
         clearTimeout(this.timer)
         this.timer = null
       }
     },
+
     carouselChange(currentIndex) {
       this.currentIndex = currentIndex
       // 如果轮播被手动切换，重置计时器
@@ -366,36 +459,54 @@ export default {
     async getScreenConfig() {
       try {
         const res = await getScreenConfig()
+        console.log(res, '数据')
         this.screenConfig = res.data
-        this.form.selectionMethod = this.screenConfig.method.find(item => item.is_select).name
-        this.form.times = this.screenConfig.select_page.map(item => item.show_time)
-        this.form.selectPage = this.screenConfig.select_page.filter(item => (item.is_select && item.src_path))
-        this.form.selectPage.forEach(item => {
+        this.form.selectionMethod = this.screenConfig.method.find(
+          (item) => item.is_select
+        ).name
+        this.form.times = this.screenConfig.select_page.map(
+          (item) => item.show_time
+        )
+        this.form.selectPage = this.screenConfig.select_page.filter(
+          (item) => item.is_select && item.src_path
+        )
+        this.form.selectPage.forEach((item) => {
           item.src_path = this.baseURL + item.src_path
         })
-        if (this.form.selectPage.length > 1 && this.form.selectionMethod === '自动轮播') {
-          const times = this.form.selectPage.map(page => page.show_time * 1000)
+        if (
+          this.form.selectPage.length > 1 &&
+          this.form.selectionMethod === '自动轮播'
+        ) {
+          const times = this.form.selectPage.map(
+            (page) => page.show_time * 1000
+          )
 
-          this.intervalSettings = times.length === 2 ? [...times, ...times] : [...times]
+          this.intervalSettings =
+            times.length === 2 ? [...times, ...times] : [...times]
         }
+        // if (this.form.selectionMethod === '自动轮播') {
+        //   this.arrow = 'never'
+        // } else {
+        //   this.arrow = 'hover'
+        // }
       } catch (error) {
         throw new Error(error.message)
       }
     },
     getPartnersOverview() {
-      getPartnersOverview().then(res => {
+      getPartnersOverview().then((res) => {
         this.partnersOverviewList = res.data
       })
     },
     getCooperationPartners() {
-      getCooperationPartners().then(res => {
+      getCooperationPartners().then((res) => {
         this.cooperationPartnersList = res.data
       })
     },
     transformToSeries(data) {
-      const categoryNames = data.map(item => item.name)
-      const fitterCounts = data.map(item => item.fitter_count)
-      const certificationCounts = data.map(item => item.certification_count)
+      const categoryNames = data.map((item) => item.name)
+      const fitterCounts = data.map((item) => item.fitter_count)
+      const certificationCounts = data.map((item) => item.certification_count)
 
       const series = [
         {
@@ -407,9 +518,9 @@ export default {
             show: true,
             position: 'insideTop',
             color: '#ffffff',
-            fontSize: 9
+            fontSize: 12
           },
-          barWidth: 20,
+          barWidth: 25,
           itemStyle: {
             color: '#4eaff5'
           }
@@ -424,9 +535,9 @@ export default {
             position: 'top',
             color: '#f56c6c',
             fontWeight: 'bold',
-            fontSize: 13
+            fontSize: 16
           },
-          barWidth: 20,
+          barWidth: 25,
           itemStyle: {
             color: '#f56c6c'
           }
@@ -439,99 +550,58 @@ export default {
       }
     },
     getCategoryOverview() {
-      getCategoryOverview().then(res => {
+      getCategoryOverview().then((res) => {
         this.categoryOverviewList = res.data
-
         const chartData = this.transformToSeries(res.data)
         this.option.xAxis.data = chartData.xAxisData
         this.option.series = chartData.series
       })
     },
     getOperationOverview() {
-      getOperationOverview().then(res => {
+      getOperationOverview().then((res) => {
         this.operationOverviewList = res.data.list_1
         this.pieOption.series[0].data = res.data.list_1
         this.operationOverviewSecondList = res.data.list_2
       })
     }
   }
-
 }
 </script>
 
 <style scoped lang="scss">
-/* 优设标题黑 */
-@font-face {
-  font-family: 'YouSheBiaoTiHei';
-  src: url('../../assets/fonts/YouSheBiaoTiHei-2.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+.carousel-container {
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: left top;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  color: #d3d6dd;
 
-/* 微软雅黑常规 */
-@font-face {
-  font-family: 'MicrosoftYaHei';
-  src: url('../../assets/fonts/微软vista雅黑.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-/* 微软雅黑加粗 */
-@font-face {
-  font-family: 'MicrosoftYaHei-Bold';
-  src: url('../../assets/fonts/微软vista雅黑Bold.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+  .pause-resume-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    opacity: 0;
+    cursor: pointer;
+  }
 }
 
 ::v-deep .el-carousel__arrow {
   background-color: #555;
 }
 
-::v-deep .el-carousel__arrow--left {
-  left: 50px;
-}
-::v-deep .el-carousel__arrow--right {
-  right: 50px;
-}
-.carousel-container {
-  // width: 1866px;
-  width: 1814px;
-  // height: 895px;
-  height: 868px;
-  // padding: 24px;
-  // overflow: hidden;
-
-  // background-color: #23272d;
-  // background-image: url("../../assets/pageBgHw.png");
-  // background-size: contain;
-  // background-position: center;
-  // background-repeat: no-repeat;
-  // transform-origin: left center;
-  // transition: transform 0.3s ease;
-
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  transform-origin: center;
-  transition: transform 0.3s ease;
-  // background-color: pink;
-
-}
-
-.screen-container-width {
-  width: 1548px;
-}
-
-@media screen and (max-width: 1199.98px) {
-  .screen-container {
-    width: 1783px;
-
-  }
-
-  .screen-container-width {
-    width: 1548px;
-  }
-}
+// ::v-deep .el-carousel__arrow--left {
+//   left: 50px;
+// }
+// ::v-deep .el-carousel__arrow--right {
+//   right: 50px;
+// }
 </style>

@@ -4,29 +4,39 @@ import {
   Message
 } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getSessionToken } from '@/utils/auth'
+
+let baseURL = process.env.VUE_APP_BASE_API
+// console.log(window.location, 'axios')
+if (window.location.host !== 'localhost:9528') {
+  baseURL = window.location.origin
+}
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: baseURL, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 10000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
-  config => {
+  (config) => {
     // do something before request is sent
-
-    if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+    const isLoginRequest = config.url.includes('/login')
+    if (!isLoginRequest) {
+      if (getSessionToken()) {
+        // let each request carry token
+        // ['X-Token'] is a custom headers key
+        // please modify it according to the actual situation
+        // config.headers['X-Token'] = getToken()
+        config.headers['Authorization'] = `${getSessionToken()}`
+      }
     }
+
     return config
   },
-  error => {
+  (error) => {
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -38,22 +48,64 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
-  response => {
+  (response) => {
     const res = response.data
+    const contentType =
+      response.headers['content-type'] || response.headers['Content-Type']
+    // const isExcel = res.type && (res.type === 'application/vnd.ms-excel' ||
+    //   res.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-    if (res.type === 'application/vnd.ms-excel' || res.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      return response
+    if (response.data instanceof Blob) {
+      if (contentType === 'application/json') {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => {
+            try {
+              const res = JSON.parse(reader.result)
+              console.log(res, 'res')
+              if (res.code !== 200 && res.code !== 401) {
+                Message({
+                  message: res.message || 'Error',
+                  type: 'error',
+                  duration: 5 * 1000
+                })
+                return Promise.reject(new Error(res.message || 'Error'))
+              } else if (res.code === 401) {
+                // 401: 未登录
+                Message({
+                  message: res.message || 'Error',
+                  type: 'error',
+                  duration: 5 * 1000
+                })
+                // store.dispatch('user/resetToken').then(() => {
+                //   location.reload()
+                // })
+                window.location.href = 'https://ipm-dev.harmonytsc.com:30115/ipm-web/login.html'
+              }
+
+              // resolve(res)
+            } catch (e) {
+              reject(e)
+            }
+          }
+          reader.onerror = reject
+          reader.readAsText(response.data)
+        })
+      } else {
+        // Handle other types of responses
+        return response
+      }
     }
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 200) {
+    if (res.code !== 200 && res.code !== 401) {
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -74,11 +126,22 @@ service.interceptors.response.use(
       //   })
       // }
       return Promise.reject(new Error(res.message || 'Error'))
+    } else if (res.code === 401) {
+      // 401: 未登录
+
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+      store.dispatch('user/resetToken').then(() => {
+        location.reload()
+      })
     } else {
       return res
     }
   },
-  error => {
+  (error) => {
     console.log('err' + error) // for debug
     Message({
       message: error.message,

@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <el-button
+      type="primary"
+      icon="el-icon-refresh"
+      style="margin-bottom: 20px;"
+      @click="goToBProject"
+    />
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -60,20 +66,32 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: true,
+      userToken: 'abc123xyz789'
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
+    goToBProject() {
+      // 构造目标链接（假设 B 项目地址为 http://localhost:9528）
+      const bProjectUrl = `http://localhost:9528/dashboard/index?token=${this.userToken}`
+
+      // 跳转到 B 项目（可以是新窗口打开，也可以当前页跳转）
+      window.location.href = bProjectUrl
+    },
     fetchData() {
-      this.listLoading = true
+      // this.listLoading = true
       // getList().then(response => {
       //   this.list = response.data.items
-      //   this.listLoading = false
+      this.listLoading = false
       // })
     }
   }
 }
 </script>
+
+<style scoped lang="scss">
+
+</style>

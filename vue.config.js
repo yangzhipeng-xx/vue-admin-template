@@ -63,15 +63,15 @@ module.exports = {
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
 
-    config.module
-      .rule('fonts')
-      .test(/\.(woff2?|eot|ttf|otf)(\?.*)?$/i)
-      .use('url-loader')
-      .loader('url-loader')
-      .options({
-        limit: 4096, // 小于 4KB 的字体转为 base64
-        name: 'fonts/[name].[hash:8].[ext]'
-      })
+    // config.module
+    //   .rule('fonts')
+    //   .test(/\.(woff2?|eot|ttf|otf)(\?.*)?$/i)
+    //   .use('url-loader')
+    //   .loader('url-loader')
+    //   .options({
+    //     limit: 4096,
+    //     name: 'fonts/[name].[hash:8].[ext]'
+    //   })
 
     // set svg-sprite-loader
     config.module

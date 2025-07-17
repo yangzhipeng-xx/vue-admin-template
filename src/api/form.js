@@ -39,11 +39,11 @@ export function importExcel(data) {
   })
 }
 
-export function exportExcel(params) {
+export function exportExcel(data) {
   return request({
     url: '/tools/excel/export',
-    method: 'get',
-    params,
+    method: 'post',
+    data,
     responseType: 'blob'
   })
 }
@@ -55,3 +55,22 @@ export function exportExcel(params) {
 //     params
 //   })
 // }
+
+export function getDataDict() {
+  return request({
+    url: '/tools/excel/get_data_dict',
+    method: 'get'
+  })
+}
+
+export function saveHeaderConfig(data) {
+  return request({
+    url: '/tools/excel/save_header_config',
+    method: 'post',
+    data: {
+      app_name: 'plan',
+      config_name: 'plan_header_config',
+      data
+    }
+  })
+}

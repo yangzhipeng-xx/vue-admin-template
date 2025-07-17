@@ -9,7 +9,6 @@ const scale = {
 // * 设计稿尺寸（px）
 // const baseWidth = 1920
 // const baseHeight = 1080
-// const baseWidth = 1866
 const baseWidth = 1866
 const baseHeight = 895
 
@@ -35,7 +34,7 @@ export default {
   },
   methods: {
     calcRate() {
-      const appRef = this.$refs['appRef']
+      const appRef = this.$refs['carouselRef']
       if (!appRef) return
 
       const currentRate = parseFloat((window.innerWidth / window.innerHeight).toFixed(5))

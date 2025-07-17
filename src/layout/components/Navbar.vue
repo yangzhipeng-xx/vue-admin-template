@@ -7,13 +7,15 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <i v-if="$route.name === 'Dashboard'" class="el-icon-video-camera" style="font-size: 30px; margin-right: 10px; margin-top: 10px;" @click.stop="handleScreenClick" />
+          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <div style="margin-left: 5px;">{{ name }}</div>
+          <i class="el-icon-caret-bottom" /> -->
         </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+        <!-- <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              首页
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
@@ -23,9 +25,9 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">登出</span>
           </el-dropdown-item>
-        </el-dropdown-menu>
+        </el-dropdown-menu> -->
       </el-dropdown>
     </div>
   </div>
@@ -44,10 +46,15 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
+    handleScreenClick() {
+      const baseUrl = window.location.origin
+      window.open(`${baseUrl}/screen`, '_blank')
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -115,8 +122,12 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // margin-top: 5px;
         position: relative;
+        cursor: pointer;
 
         .user-avatar {
           cursor: pointer;

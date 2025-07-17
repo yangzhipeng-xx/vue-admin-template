@@ -4,6 +4,16 @@
 @import './element-ui.scss';
 @import './sidebar.scss';
 
+// 🍊
+* {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  outline: none;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -63,4 +73,28 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+}
+
+/* 优设标题黑 */
+@font-face {
+  font-family: 'YouSheBiaoTiHei';
+  src: url('../assets/fonts/YouSheBiaoTiHei-2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 微软雅黑常规 */
+@font-face {
+  font-family: 'MicrosoftYaHei';
+  src: url('../assets/fonts/微软vista雅黑.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 微软雅黑加粗 */
+@font-face {
+  font-family: 'MicrosoftYaHei-Bold';
+  src: url('../assets/fonts/微软vista雅黑Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }

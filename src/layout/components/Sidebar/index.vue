@@ -38,8 +38,12 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
+    // ...mapState({
+    //   routes: state => state.permission.routes
+    // }),
     routes() {
-      return this.$router.options.routes
+      // return this.$router.options.routes
+      return this.$store.state.permission.routes
     },
     activeMenu() {
       const route = this.$route

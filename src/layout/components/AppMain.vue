@@ -13,10 +13,9 @@ export default {
     key() {
       return this.$route.path
     },
-    // 判断是否是数据看板页面
+    // 判断是否是大屏投屏页面
     isDashboard() {
-      console.log(this.$route.meta.title)
-      return this.$route.meta.title === '数据看板'
+      return this.$route.meta.title === '大屏投屏'
     }
   }
 }

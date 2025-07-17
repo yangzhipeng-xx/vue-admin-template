@@ -32,54 +32,54 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   // {
-  //   path: '/login',
-  //   component: () => import('@/views/login/index'),
+  //   path: '/',
+  //   component: () => import('@/views/home/index'),
+  //   meta: { title: '默认页面' },
   //   hidden: true
   // },
-
+  {
+    path: '/screen',
+    name: 'Screen',
+    component: () => import('@/views/dashboard/BlankScreen'),
+    meta: { title: '投屏' },
+    hidden: true
+  },
   {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
-  },
+  }
 
+  // 404 page must be placed at the end !!!
+  // { path: '*', redirect: '/404', hidden: true }
+]
+
+export const asyncRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '数据看板', icon: 'dashboard' }
-    }]
-  },
-
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: '统计表', icon: 'el-icon-s-help' },
+    redirect: '/dashboard/index',
+    meta: { title: '数据看板', icon: 'dashboard' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'dashboard/index',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '大屏投屏', icon: 'dashboard' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'dashboard/config',
+        name: 'Config',
+        component: () => import('@/views/dashboard/Configuration'),
+        meta: { title: '投屏配置', icon: 'dashboard' }
       }
     ]
   },
-
   {
     path: '/form',
     component: Layout,
+    redirect: '/form/index',
+    meta: { title: '计划与进展', icon: 'form' },
     children: [
       {
         path: 'index',
@@ -89,7 +89,6 @@ export const constantRoutes = [
       }
     ]
   },
-
   {
     path: '/nested',
     component: Layout,
@@ -101,54 +100,20 @@ export const constantRoutes = [
         path: 'menu1',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
         name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        meta: { title: '问题跟踪表', icon: 'nested' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
+        path: 'exempt',
+        component: () => import('@/views/nested/exempt/index'),
+        name: 'Exempt',
+        meta: { title: '豁免清单', icon: 'nested' }
       }
     ]
   },
-
   {
     path: 'external-link',
     component: Layout,
+    meta: { title: '工具清单', icon: 'tree' },
     children: [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
@@ -159,23 +124,22 @@ export const constantRoutes = [
   {
     path: 'external-link-copy',
     component: Layout,
+    meta: { title: '配置', icon: 'table' },
     children: [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
         meta: { title: '配置', icon: 'table' }
       }
     ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 

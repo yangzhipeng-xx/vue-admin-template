@@ -1,4 +1,5 @@
 <template>
+  <!-- <component :is="type" v-bind="linkProps(to)" :target="to === '/screen' ? '_blank' : '_self'"> -->
   <component :is="type" v-bind="linkProps(to)">
     <slot />
   </component>
