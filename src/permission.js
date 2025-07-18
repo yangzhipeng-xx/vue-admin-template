@@ -1,6 +1,6 @@
 import router from './router'
 import store from './store'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getSessionToken, setSessionToken } from '@/utils/auth' // get token from cookie
@@ -80,19 +80,19 @@ router.beforeEach(async(to, from, next) => {
           router.addRoutes(accessRoutes)
 
           // // 删除 token 和 from 参数
-          const query = { ...to.query }
-          delete query.token
+          // const query = { ...to.query }
+          // delete query.token
           // delete query.from
 
           // 跳转到目标页面（不带 token）
           // next({ ...to, query }) // 注意不要 replace: true
-          next({ ...to, query, replace: true })
+          next({ ...to, replace: true })
           NProgress.done()
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/404`)
+          // Message.error(error.message || 'Has Error')
+          // next(`/404`)
           NProgress.done()
         }
       }

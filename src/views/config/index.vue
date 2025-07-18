@@ -1,0 +1,26 @@
+<template>
+  <div>
+    Config 未完待续
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Config',
+  data() {
+    return {
+      loading: true
+    }
+  },
+  created() {
+    // Simulate loading data
+    // setTimeout(() => {
+    //   this.loading = false
+    // }, 1000)
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

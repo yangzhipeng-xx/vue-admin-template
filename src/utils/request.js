@@ -84,10 +84,10 @@ service.interceptors.response.use(
                   type: 'error',
                   duration: 5 * 1000
                 })
-                // store.dispatch('user/resetToken').then(() => {
-                //   location.reload()
-                // })
-                window.location.href = 'https://ipm-dev.harmonytsc.com:30115/ipm-web/login.html'
+                store.dispatch('user/resetToken').then(() => {
+                  // location.reload()
+                  window.location.replace(res.data.login_url || window.location.origin + '/404')
+                })
               }
 
               // resolve(res)
@@ -135,7 +135,8 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       store.dispatch('user/resetToken').then(() => {
-        location.reload()
+        // location.reload()
+        window.location.replace(res.data.login_url || window.location.origin + '/404')
       })
     } else {
       return res

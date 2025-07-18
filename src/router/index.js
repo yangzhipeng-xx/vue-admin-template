@@ -31,12 +31,13 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  // {
-  //   path: '/',
-  //   component: () => import('@/views/home/index'),
-  //   meta: { title: '默认页面' },
-  //   hidden: true
-  // },
+  {
+    path: '/',
+    name: 'Index',
+    component: () => import('@/views/home/index'),
+    hidden: true,
+    meta: { title: '鸿蒙外设管理平台' }
+  },
   {
     path: '/screen',
     name: 'Screen',
@@ -56,19 +57,20 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
     redirect: '/dashboard/index',
     meta: { title: '数据看板', icon: 'dashboard' },
+    alwaysShow: true,
     children: [
       {
-        path: 'dashboard/index',
+        path: 'index',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: '大屏投屏', icon: 'dashboard' }
       },
       {
-        path: 'dashboard/config',
+        path: 'config',
         name: 'Config',
         component: () => import('@/views/dashboard/Configuration'),
         meta: { title: '投屏配置', icon: 'dashboard' }
@@ -78,11 +80,11 @@ export const asyncRoutes = [
   {
     path: '/form',
     component: Layout,
-    redirect: '/form/index',
+    // redirect: '/form/index',
     meta: { title: '计划与进展', icon: 'form' },
     children: [
       {
-        path: 'index',
+        path: '',
         name: 'Form',
         component: () => import('@/views/form/index'),
         meta: { title: '计划与进展', icon: 'form' }
@@ -94,6 +96,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/nested/menu1',
     name: 'Nested',
+    alwaysShow: true,
     meta: { title: '认证测试', icon: 'nested' },
     children: [
       {
@@ -111,23 +114,27 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: 'external-link',
+    path: '/tool',
     component: Layout,
     meta: { title: '工具清单', icon: 'tree' },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+        path: '',
+        component: () => import('@/views/toolList/index'),
+        name: 'Tool',
         meta: { title: '工具清单', icon: 'tree' }
       }
     ]
   },
   {
-    path: 'external-link-copy',
+    path: '/config',
     component: Layout,
     meta: { title: '配置', icon: 'table' },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+        path: '',
+        component: () => import('@/views/config/index'),
+        name: 'ConfigMenu',
         meta: { title: '配置', icon: 'table' }
       }
     ]

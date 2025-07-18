@@ -23,7 +23,8 @@ export function filterAsyncRoutes(routes, allowedPermissionIds) {
 }
 
 const state = {
-  routes: JSON.parse(sessionStorage.getItem('routes')) || []
+  routes: [],
+  addRoutes: []
 }
 
 const mutations = {

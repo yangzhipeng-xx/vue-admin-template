@@ -10,6 +10,13 @@ export const ASYNC_ROUTES = [
   { name: '配置', id: 'W14' }
 ]
 
+export const ROUTE_MAP = {
+  'W10,W1001': '/dashboard/index',
+  'W10,W1002': '/dashboard/Configuration',
+  'W12,W1201': '/nested/menu1',
+  'W12,W1202': '/nested/exempt'
+}
+
 const permissionMap = {}
 ASYNC_ROUTES.forEach(item => {
   permissionMap[item.name] = item.id
