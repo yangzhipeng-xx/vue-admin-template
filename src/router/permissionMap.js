@@ -12,7 +12,7 @@ export const ASYNC_ROUTES = [
 
 export const ROUTE_MAP = {
   'W10,W1001': '/dashboard/index',
-  'W10,W1002': '/dashboard/Configuration',
+  'W10,W1002': '/dashboard/config',
   'W12,W1201': '/nested/menu1',
   'W12,W1202': '/nested/exempt'
 }

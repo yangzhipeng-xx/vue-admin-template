@@ -12,6 +12,18 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start()
   document.title = getPageTitle(to.meta.title)
 
+  if (to.path === '/404') {
+    next()
+    NProgress.done()
+    return
+  }
+
+  if (to.path === '/screen') {
+    next()
+    NProgress.done()
+    return
+  }
+
   // 如果访问 /dashboard/index 并且带 token 参数
   if (to.path === '/' && to.query.token) {
     const incomingToken = to.query.token
@@ -39,12 +51,6 @@ router.beforeEach(async(to, from, next) => {
       next('/404')
       NProgress.done()
     }
-  }
-
-  if (to.path === '/404') {
-    next()
-    NProgress.done()
-    return
   }
 
   const hasToken = getSessionToken()
