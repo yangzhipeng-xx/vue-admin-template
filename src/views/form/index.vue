@@ -10,8 +10,8 @@
           size="mini"
           class="search-form"
         >
-          <el-form-item label="*品类">
-            <el-select v-model="searchForm.category" placeholder="*品类">
+          <el-form-item label="品类">
+            <el-select v-model="searchForm.category" placeholder="品类">
               <el-option
                 v-for="item in dataDict.category"
                 :key="item"
@@ -20,10 +20,10 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="*厂商(送测商)">
+          <el-form-item label="厂商(送测商)">
             <el-select
               v-model="searchForm.manufacturer"
-              placeholder="*厂商(送测商)"
+              placeholder="厂商(送测商)"
             >
               <el-option
                 v-for="item in dataDict.manufacturer"
@@ -72,10 +72,10 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="*是否最新轮次">
+          <el-form-item label="是否最新轮次">
             <el-select
               v-model="searchForm.is_new"
-              placeholder="*是否最新轮次"
+              placeholder="是否最新轮次"
             >
               <el-option
                 v-for="item in dataDict.is_or_not"
@@ -97,6 +97,12 @@
                 :value="item"
               />
             </el-select>
+          </el-form-item>
+          <el-form-item label="型号">
+            <el-input
+              v-model="searchForm.model"
+              placeholder="型号"
+            />
           </el-form-item>
           <el-form-item>
             <el-button
@@ -247,7 +253,7 @@
       <el-collapse v-model="activeNames" @change="handleChange">
         <!-- 1. PC外设基本信息 -->
         <el-collapse-item title="PC外设基本信息" name="1">
-          <el-form :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef1" :inline="false" :model="formData" label-width="70px" :rules="rules1">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="序号" label-width="40px">
@@ -264,8 +270,8 @@
 
             <el-row :gutter="20">
               <el-col :span="6">
-                <el-form-item label="*品类" label-width="46px">
-                  <el-select v-model="formData.category" :disabled="disabled" placeholder="*品类">
+                <el-form-item label="品类" label-width="50px" prop="category">
+                  <el-select v-model="formData.category" :disabled="disabled" placeholder="必填项">
                     <el-option
                       v-for="item in dataDict.category"
                       :key="item"
@@ -276,10 +282,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label="*厂商(送测商)" label-width="97px">
+                <el-form-item label="厂商(送测商)" label-width="101px" prop="manufacturer">
                   <el-select
                     v-model="formData.manufacturer"
-                    placeholder="*厂商(送测商)"
+                    placeholder="必填项"
                     :disabled="disabled"
                   >
                     <el-option
@@ -322,20 +328,20 @@
 
             <el-row :gutter="20">
               <el-col :span="6">
-                <el-form-item label="*品牌" label-width="47px">
+                <el-form-item label="品牌" label-width="50px" prop="brand">
                   <el-input
                     v-model="formData.brand"
                     :disabled="disabled"
-                    placeholder="*品牌"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label="*系列型号" label-width="76px">
+                <el-form-item label="系列型号">
                   <el-input
                     v-model="formData.series_model"
                     :disabled="disabled"
-                    placeholder="*系列型号"
+                    placeholder="系列型号"
                   />
                 </el-form-item>
               </el-col>
@@ -363,20 +369,20 @@
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="*品名(厂商认证申请)" label-width="139px">
+                <el-form-item label="品名(厂商认证申请)" label-width="134px">
                   <el-input
                     v-model="formData.product_name"
                     :disabled="disabled"
-                    placeholder="*品名(厂商认证申请)"
+                    placeholder="品名(厂商认证申请)"
                   />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="*型号" label-width="47px">
+                <el-form-item label="型号" label-width="40px">
                   <el-input
                     v-model="formData.model"
                     :disabled="disabled"
-                    placeholder="*型号"
+                    placeholder="型号"
                   />
                 </el-form-item>
               </el-col>
@@ -395,7 +401,7 @@
 
         <!-- 2. 任务详情 -->
         <el-collapse-item title="任务详情" name="2">
-          <el-form :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef2" :inline="false" :model="formData" label-width="70px" :rules="rules2">
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="实验室厂商接口人" label-width="125px">
@@ -461,22 +467,22 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="任务下发时间" label-width="100px">
+                <el-form-item label="任务下发时间" label-width="106px" prop="task_send_time">
                   <el-date-picker
                     v-model="formData.task_send_time"
                     type="datetime"
-                    placeholder="任务下发时间"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
               </el-col>
 
               <el-col :span="12">
-                <el-form-item label="*转测轮次(yyyyTN)" label-width="133px">
+                <el-form-item label="转测轮次(yyyyTN)" label-width="133px">
                   <el-input
                     v-model="formData.transfer_test_num"
                     :disabled="disabled"
-                    placeholder="*转测轮次(yyyyTN)"
+                    placeholder="转测轮次(yyyyTN)"
                   />
                 </el-form-item>
               </el-col>
@@ -508,10 +514,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="*是否最新轮次" label-width="102px">
+                <el-form-item label="是否最新轮次" label-width="106px" prop="is_new">
                   <el-select
                     v-model="formData.is_new"
-                    placeholder="*是否最新轮次"
+                    placeholder="必填项"
                     :disabled="disabled"
                   >
                     <el-option
@@ -549,11 +555,11 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="*实际样品送达日" label-width="116px">
+                <el-form-item label="实际样品送达日" label-width="120px" prop="arrive_time">
                   <el-date-picker
                     v-model="formData.arrive_time"
                     type="datetime"
-                    placeholder="*实际样品送达日"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
@@ -574,23 +580,23 @@
 
         <!-- 3. 报告发布详情 -->
         <el-collapse-item title="报告发布详情" name="3">
-          <el-form :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef3" :inline="false" :model="formData" label-width="70px" :rules="rules3">
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="测试结论">
+                <el-form-item label="测试结论" prop="test_conclusion" label-width="78px">
                   <el-input
                     v-model="formData.test_conclusion"
                     :disabled="disabled"
-                    placeholder="测试结论"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="测试人" label-width="54px">
+                <el-form-item label="测试人" label-width="64px" prop="test_user">
                   <el-input
                     v-model="formData.test_user"
                     :disabled="disabled"
-                    placeholder="测试人"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -607,13 +613,13 @@
 
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="致命问题数" label-width="82px">
+                <el-form-item label="致命问题数" label-width="92px" prop="too_high">
                   <el-input
                     v-model="formData.too_high"
                     class="no-arrow-number-input"
                     type="number"
                     :disabled="disabled"
-                    placeholder="致命问题数"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -631,13 +637,13 @@
 
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="严重问题数" label-width="82px">
+                <el-form-item label="严重问题数" label-width="92px" prop="high">
                   <el-input
                     v-model="formData.high"
                     class="no-arrow-number-input"
                     type="number"
                     :disabled="disabled"
-                    placeholder="严重问题数"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -655,13 +661,13 @@
 
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="一般问题数" label-width="82px">
+                <el-form-item label="一般问题数" label-width="92px" prop="low">
                   <el-input
                     v-model="formData.low"
                     class="no-arrow-number-input"
                     type="number"
                     :disabled="disabled"
-                    placeholder="一般问题数"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -679,13 +685,13 @@
 
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="提示问题数" label-width="82px">
+                <el-form-item label="提示问题数" label-width="92px" prop="warn">
                   <el-input
                     v-model="formData.warn"
                     class="no-arrow-number-input"
                     type="number"
                     :disabled="disabled"
-                    placeholder="提示问题数"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -706,7 +712,7 @@
 
         <!-- 4. 外设发证详情 -->
         <el-collapse-item title="外设发证详情" name="4">
-          <el-form :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef4" :inline="false" :model="formData" label-width="70px">
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="发证评审日" label-width="82px">
@@ -1018,7 +1024,7 @@
 
         <!-- 5. 转测详情 -->
         <el-collapse-item title="转测详情" name="5">
-          <el-form :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef5" :inline="false" :model="formData" label-width="70px" :rules="rules5">
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="驱动" label-width="40px">
@@ -1075,10 +1081,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="驱动下载方式（应用市场/受邀测试/应用尝鲜）" label-width="160px" class="long-label">
+                <el-form-item label="驱动下载方式（应用市场/受邀测试/应用尝鲜）" label-width="162px" class="long-label" prop="drive_download_method">
                   <el-input
                     v-model="formData.drive_download_method"
-                    placeholder="驱动下载方式（应用市场/受邀测试/应用尝鲜）"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
@@ -1131,19 +1137,19 @@
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="驱动版本号" label-width="82px">
+                <el-form-item label="驱动版本号" label-width="92px" prop="drive_version_number">
                   <el-input
                     v-model="formData.drive_version_number"
-                    placeholder="驱动版本号"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="测试地点">
+                <el-form-item label="测试地点" label-width="78px" prop="test_addr">
                   <el-input
                     v-model="formData.test_addr"
-                    placeholder="测试地点"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
@@ -1163,13 +1169,13 @@
 
         <!-- 6. 测试详情 -->
         <el-collapse-item title="测试详情" name="6">
-          <el-form :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef6" :inline="false" :model="formData" label-width="70px" :rules="rules6">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="测试状态">
+                <el-form-item label="测试状态" label-width="78px" prop="test_status">
                   <el-select
                     v-model="formData.test_status"
-                    placeholder="测试状态"
+                    placeholder="必填项"
                     :disabled="disabled"
                   >
                     <el-option
@@ -1185,11 +1191,11 @@
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="测试开始时间" label-width="96px">
+                <el-form-item label="测试开始时间" label-width="106px" prop="test_start_time">
                   <el-date-picker
                     v-model="formData.test_start_time"
                     type="datetime"
-                    placeholder="测试开始时间"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
@@ -1278,11 +1284,11 @@
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="测试完成时间" label-width="96px">
+                <el-form-item label="测试完成时间" label-width="106px" prop="test_finish_time">
                   <el-date-picker
                     v-model="formData.test_finish_time"
                     type="datetime"
-                    placeholder="测试完成时间"
+                    placeholder="必填项"
                     :disabled="disabled"
                   />
                 </el-form-item>
@@ -1409,7 +1415,8 @@ export default {
         is_new: '',
         test_status: '',
         test_conclusion: '',
-        pla_is_certification: ''
+        pla_is_certification: '',
+        model: ''
       },
       isShowSearch: true,
       checkedFields: [],
@@ -1438,7 +1445,35 @@ export default {
       activeNames: ['1'],
       checkAll: false,
       isIndeterminate: true,
-      checkedTableHeader: []
+      checkedTableHeader: [],
+      rules1: {
+        category: [{ required: true, message: '必填项', trigger: 'blur' }],
+        manufacturer: [{ required: true, message: '必填项', trigger: 'change' }],
+        brand: [{ required: true, message: '必填项', trigger: 'blur' }]
+      },
+      rules2: {
+        task_send_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }],
+        is_new: [{ required: true, message: '必填项', trigger: 'change' }],
+        arrive_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }]
+      },
+      rules3: {
+        test_conclusion: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_user: [{ required: true, message: '必填项', trigger: 'blur' }],
+        too_high: [{ required: true, message: '必填项', trigger: 'blur' }],
+        high: [{ required: true, message: '必填项', trigger: 'blur' }],
+        low: [{ required: true, message: '必填项', trigger: 'blur' }],
+        warn: [{ required: true, message: '必填项', trigger: 'blur' }]
+      },
+      rules5: {
+        drive_download_method: [{ required: true, message: '必填项', trigger: 'blur' }],
+        drive_version_number: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_addr: [{ required: true, message: '必填项', trigger: 'blur' }]
+      },
+      rules6: {
+        test_status: [{ required: true, message: '必填项', trigger: 'change' }],
+        test_start_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }],
+        test_finish_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }]
+      }
     }
   },
   computed: {},
@@ -1517,7 +1552,7 @@ export default {
     },
     exportToExcel() {
       this.listLoading = true
-      const data = this.getExportExcelParams()
+      const data = this.getExportExcelData()
       console.log('导出参数:', data)
 
       exportExcel(data)
@@ -1533,7 +1568,7 @@ export default {
           this.listLoading = false
         })
     },
-    getExportExcelParams() {
+    getExportExcelData() {
       const data = {
         category: this.searchForm.category,
         manufacturer: this.searchForm.manufacturer,
@@ -1542,6 +1577,7 @@ export default {
         is_certification: this.searchForm.is_certification,
         test_conclusion: this.searchForm.test_conclusion,
         pla_is_certification: this.searchForm.pla_is_certification,
+        model: this.searchForm.model,
         ids: this.ids
       }
       return data
@@ -1592,6 +1628,15 @@ export default {
       return obj
     },
     reset() {
+      if (this.dialogTitle !== '查看') {
+        const refs = ['formRef1', 'formRef2', 'formRef3', 'formRef5', 'formRef6']
+        refs.forEach(refName => {
+          const formRef = this.$refs[refName]
+          if (formRef && typeof formRef.resetFields === 'function') {
+            formRef.resetFields()
+          }
+        })
+      }
       this.formDialogVisible = false
       this.formData = this.clearObjectValues(this.formData)
       this.activeNames = ['1']
@@ -1640,22 +1685,50 @@ export default {
      * 新增或编辑提交操作
      */
     addOrEditSubmit() {
-      const data = this.formatDateTimeFieldsForObject(this.formData)
-      if (this.dialogTitle === '编辑') {
-        data.row_vision = this.rowVision
-      }
-      console.log(data, 'data')
-      saveOrUpdateData({ data, id: this.currentEditID }).then(async(response) => {
-        this.formDialogVisible = false
-        this.dialogTitle === '新增'
-          ? this.$message.success('新增成功')
-          : this.$message.success('编辑成功')
-        this.formData = this.clearObjectValues(this.formData)
-        const params = this.getFetchDataParams()
-        await this.fetchExcelData(params)
-        this.reset()
+      const refs = ['formRef1', 'formRef2', 'formRef3', 'formRef5', 'formRef6']
+      const promises = refs.map(refName =>
+        new Promise(resolve => {
+          this.$refs[refName].validate(valid => {
+            resolve(valid)
+          })
+        })
+      )
+
+      Promise.all(promises).then(results => {
+        console.log(results, '所有表单校验结果')
+
+        if (results.every(valid => valid)) {
+          console.log('✅ 所有表单都校验通过，可以提交数据')
+          const data = this.formatDateTimeFieldsForObject(this.formData)
+          if (this.dialogTitle === '编辑') {
+            data.row_vision = this.rowVision
+          }
+          console.log(data, 'data')
+          saveOrUpdateData({ data, id: this.currentEditID }).then(async(response) => {
+            this.formDialogVisible = false
+            this.dialogTitle === '新增'
+              ? this.$message.success('新增成功')
+              : this.$message.success('编辑成功')
+            this.formData = this.clearObjectValues(this.formData)
+            const params = this.getFetchDataParams()
+            await this.fetchExcelData(params)
+            this.reset()
+          })
+        } else {
+          this.$message.error('请检查表单内容，有必填项为空')
+          const invalidRefs = refs.filter((refName, index) => !results[index])
+          console.log('❌ 以下表单校验未通过:', invalidRefs)
+          this.activeNames = invalidRefs.map(ref => ref.replace(/\D+/g, ''))
+        }
       })
     },
+    // findAllFalseIndices(arr) {
+    //   return arr
+    //     .map((value, index) => (value === false ? index : undefined))
+    //     .filter(value => value !== undefined)
+    //     .map(index => (index > 2 ? index + 2 : index + 1))
+    //     .map(String)
+    // },
     async fetchExcelHeader() {
       try {
         const response = await getExcelHeader()
@@ -1745,7 +1818,8 @@ export default {
         is_new: this.searchForm.is_new,
         is_certification: this.searchForm.is_certification,
         test_conclusion: this.searchForm.test_conclusion,
-        pla_is_certification: this.searchForm.pla_is_certification
+        pla_is_certification: this.searchForm.pla_is_certification,
+        model: this.searchForm.model
       }
       return params
     },
@@ -1778,7 +1852,8 @@ export default {
         is_new: '',
         test_status: '',
         test_conclusion: '',
-        pla_is_certification: ''
+        pla_is_certification: '',
+        model: ''
       }
     },
     handleCheck(value, header) {
