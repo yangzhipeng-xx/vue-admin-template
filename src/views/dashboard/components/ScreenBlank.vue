@@ -84,7 +84,8 @@
               <div class="table-title-item">TOP</div>
               <div class="table-title-item">厂家</div>
               <div class="table-title-item">
-                开发适配中/<span>认证测试数量</span>
+                <!-- 开发适配中/ -->
+                <span>认证送测数量</span>
               </div>
               <div class="table-title-item">发证总数</div>
             </div>
@@ -576,15 +577,15 @@ export default {
               }
 
               &:first-child {
-                margin-right: 20px;
+                margin-right: 13px;
               }
 
               &:nth-child(2) {
-                margin-right: 63px;
+                margin-right: 45px;
               }
 
               &:nth-child(3) {
-                margin-right: 43px;
+                margin-right: 138px;
                 color: #35648a;
               }
 

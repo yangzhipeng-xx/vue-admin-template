@@ -6,8 +6,8 @@
       style="margin-bottom: 20px;"
       @click="goToBProject"
     />
+    <!-- v-loading="listLoading" -->
     <el-table
-      v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
       border

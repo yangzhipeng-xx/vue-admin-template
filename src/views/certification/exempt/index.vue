@@ -122,8 +122,8 @@
         </div>
 
         <!-- 表格 -->
+        <!-- v-loading="listLoading" -->
         <el-table
-          v-loading="listLoading"
           :data="tableData"
           element-loading-text="Loading"
           fit
@@ -844,7 +844,7 @@ import {
   getDataDict
 } from '@/api/form'
 
-import { EXEMPT_DATE_TIME } from '@/utils/constant'
+import { EXEMPT_DATE_TIME } from '@/utils/constants'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -962,7 +962,7 @@ export default {
 
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('problem_image', this.formData.problem_number)
+      formData.append('problem_number', this.formData.problem_number)
       formData.append('type', type)
 
       uploadImg(formData)
@@ -1181,7 +1181,7 @@ export default {
       this.$message.success('导出成功')
     },
     exportToExcel() {
-      this.listLoading = true
+      // this.listLoading = true
       const data = this.getExportExcelData()
       console.log('导出参数:', data)
 
@@ -1192,10 +1192,10 @@ export default {
         })
         .catch((error) => {
           console.error('导出错误:', error)
-          this.$message.error('导出失败')
+          // this.$message.error('导出失败')
         })
         .finally(() => {
-          this.listLoading = false
+          // this.listLoading = false
         })
     },
     getExportExcelData() {
@@ -1233,7 +1233,7 @@ export default {
         })
         .catch((err) => {
           console.error('导入错误:', err)
-          this.$message.error('导入失败')
+          // this.$message.error('导入失败')
         })
         .finally(() => {
           this.listLoading = false

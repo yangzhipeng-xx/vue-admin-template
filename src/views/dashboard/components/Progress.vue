@@ -1,8 +1,8 @@
 <template>
   <div class="progress-container" :style="componentStyle">
     <!-- 数据显示 -->
-    <div class="data-display" :style="dataStyle">
-      <div
+    <!-- <div class="data-display" :style="dataStyle"> -->
+    <!-- <div
         v-if="blueValue > 0"
         class="blue-value value"
         :style="{
@@ -11,10 +11,10 @@
         }"
       >
         {{ blueValue }}
-      </div>
-      <!-- <div v-if="blueValue > 0 && yellowValue > 0" class="blue-value"> / </div> -->
-      <!-- <div v-if="yellowValue > 0" class="yellow-value">{{ yellowValue }}</div> -->
-    </div>
+      </div> -->
+    <!-- <div v-if="blueValue > 0 && yellowValue > 0" class="blue-value"> / </div> -->
+    <!-- <div v-if="yellowValue > 0" class="yellow-value">{{ yellowValue }}</div> -->
+    <!-- </div> -->
 
     <div class="data-display" :style="dataStyle">
       <!-- <div v-if="blueValue > 0" class="blue-value">{{ blueValue }}</div> -->
@@ -34,11 +34,11 @@
     <!-- 并排进度条容器 -->
     <div class="background-bar">
       <!-- 蓝色进度条在左边 -->
-      <div
+      <!-- <div
         v-if="blueValue > 0"
         class="progress blue"
         :style="{ width: normalizedBlueValue + 5 + '%' }"
-      />
+      /> -->
       <!-- 黄色进度条在右边 -->
       <div
         v-if="yellowValue > 0"
@@ -92,9 +92,14 @@ export default {
         : this.normalizedBlueValue - 5
     },
     yellowLeftValue() {
-      if (this.blueValue === 0 && this.normalizedYellowValue < 10) {
+      // if (this.blueValue === 0 && this.normalizedYellowValue < 10) {
+      //   return this.normalizedYellowValue + 2
+      // } else if (this.blueValue === 0 && this.normalizedYellowValue - 5 < 10) {
+      //   return this.normalizedYellowValue - 10
+      // }
+      if (this.normalizedYellowValue < 10) {
         return this.normalizedYellowValue + 2
-      } else if (this.blueValue === 0 && this.normalizedYellowValue - 5 < 10) {
+      } else if (this.normalizedYellowValue - 5 < 10) {
         return this.normalizedYellowValue - 10
       }
       return this.normalizedYellowValue - 5 < 10

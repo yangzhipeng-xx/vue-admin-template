@@ -23,16 +23,16 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     // do something before request is sent
-    const isLoginRequest = config.url.includes('/login')
-    if (!isLoginRequest) {
-      if (getSessionToken()) {
-        // let each request carry token
-        // ['X-Token'] is a custom headers key
-        // please modify it according to the actual situation
-        // config.headers['X-Token'] = getToken()
-        config.headers['Authorization'] = `${getSessionToken()}`
-      }
+    // const isLoginRequest = config.url.includes('/login')
+    // if (!isLoginRequest) {
+    if (getSessionToken()) {
+      // let each request carry token
+      // ['X-Token'] is a custom headers key
+      // please modify it according to the actual situation
+      // config.headers['X-Token'] = getToken()
+      config.headers['Authorization'] = `${getSessionToken()}`
     }
+    // }
 
     return config
   },
@@ -76,7 +76,8 @@ service.interceptors.response.use(
                   type: 'error',
                   duration: 5 * 1000
                 })
-                return Promise.reject(new Error(res.message || 'Error'))
+                // return Promise.reject(new Error(res.message || 'Error'))
+                return Promise.reject(res.message)
               } else if (res.code === 401) {
                 // 401: 未登录
                 Message({
@@ -125,7 +126,8 @@ service.interceptors.response.use(
       //     })
       //   })
       // }
-      return Promise.reject(new Error(res.message || 'Error'))
+      // return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(res.message)
     } else if (res.code === 401) {
       // 401: 未登录
 

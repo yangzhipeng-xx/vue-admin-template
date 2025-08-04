@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      default: require('@/assets/星汉实验室大屏-加介绍页-20250612_正式版_01.png')
+      default: require('@/assets/20250612_01.png')
     }
   },
   computed: {

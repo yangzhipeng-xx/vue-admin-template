@@ -167,8 +167,8 @@
           </div>
         </div>
 
+        <!-- v-loading="listLoading" -->
         <el-table
-          v-loading="listLoading"
           :data="tableData"
           element-loading-text="Loading"
           fit
@@ -1397,7 +1397,7 @@ import {
   getDataDict,
   saveHeaderConfig
 } from '@/api/form'
-import { DATE_TIME_DATA, INT_DATA } from '@/utils/constant'
+import { DATE_TIME_DATA, INT_DATA } from '@/utils/constants'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
@@ -1452,9 +1452,9 @@ export default {
         brand: [{ required: true, message: '必填项', trigger: 'blur' }]
       },
       rules2: {
-        task_send_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }],
+        task_send_time: [{ required: true, message: '必填项', trigger: 'blur' }],
         is_new: [{ required: true, message: '必填项', trigger: 'change' }],
-        arrive_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }]
+        arrive_time: [{ required: true, message: '必填项', trigger: 'blur' }]
       },
       rules3: {
         test_conclusion: [{ required: true, message: '必填项', trigger: 'blur' }],
@@ -1471,8 +1471,8 @@ export default {
       },
       rules6: {
         test_status: [{ required: true, message: '必填项', trigger: 'change' }],
-        test_start_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }],
-        test_finish_time: [{ type: 'date', required: true, message: '必填项', trigger: 'blur' }]
+        test_start_time: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_finish_time: [{ required: true, message: '必填项', trigger: 'blur' }]
       }
     }
   },

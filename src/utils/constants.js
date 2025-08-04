@@ -1,3 +1,12 @@
+export const PROBLEM_INT_DATA = [
+  'serial_number'
+]
+export const PROBLEM_DATE_TIME = [
+  'merge_date',
+  'problem_first_found_time',
+  'update_time',
+  'created_time'
+]
 
 export const EXEMPT_DATE_TIME = [
   'problem_first_found_time',

@@ -202,7 +202,7 @@ export default {
           bottom: 40
         },
         legend: {
-          data: ['适配认证中', '发证总数'],
+          data: ['认证测试中', '发证总数'],
           left: 'right',
           top: 'top',
           itemWidth: 10,
@@ -240,7 +240,7 @@ export default {
         },
         series: [
           {
-            name: '适配认证中',
+            name: '认证测试中',
             data: [],
             type: 'bar',
             stack: 'x',
@@ -399,7 +399,7 @@ export default {
 
       const series = [
         {
-          name: '适配认证中',
+          name: '认证测试中',
           data: fitterCounts,
           type: 'bar',
           stack: 'x',

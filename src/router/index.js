@@ -74,6 +74,12 @@ export const asyncRoutes = [
         name: 'Config',
         component: () => import('@/views/dashboard/Configuration'),
         meta: { title: '投屏配置', icon: 'dashboard' }
+      },
+      {
+        path: 'report',
+        name: 'Report',
+        component: () => import('@/views/dashboard/TestWeeklyReport.vue'),
+        meta: { title: '测试周报', icon: 'dashboard' }
       }
     ]
   },
@@ -92,22 +98,22 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/nested',
+    path: '/certification',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/certification/menu1',
+    name: 'Certification',
     alwaysShow: true,
     meta: { title: '认证测试', icon: 'nested' },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
+        path: 'problem',
+        component: () => import('@/views/certification/problem/index'), // Parent router-view
+        name: 'Problem',
         meta: { title: '问题跟踪表', icon: 'nested' }
       },
       {
         path: 'exempt',
-        component: () => import('@/views/nested/exempt/index'),
+        component: () => import('@/views/certification/exempt/index'),
         name: 'Exempt',
         meta: { title: '豁免清单', icon: 'nested' }
       }

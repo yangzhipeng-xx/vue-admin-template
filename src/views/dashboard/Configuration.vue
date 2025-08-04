@@ -7,113 +7,128 @@
       label-position="top"
       label-width="150px"
     >
-      <el-form-item label="轮播方式：">
-        <el-select v-model="form.selectionMethod" placeholder="请选择轮播方式">
-          <el-option
-            v-for="item in screenConfig.method"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <template v-for="(item, index) in screenConfig.select_page">
-        <el-form-item
-          v-if="isAutoPlay"
-          :key="item.id"
-          :label="`第${index + 1}页轮播时间(S)：`"
-        >
-          <el-input
-            v-model.number="form.times[index]"
-            class="no-arrow-number-input"
-            type="number"
-            placeholder="请设置轮播时间"
-            @input="handleInput($event)"
-          />
-        </el-form-item>
-      </template>
-      <el-form-item label="轮播图片：">
-        <div class="img-container">
-          <div style="width: 178px; margin-right: 18px">
-            <el-upload
-              class="avatar-uploader"
-              action="#"
-              :show-file-list="false"
-              :http-request="updateImageSecond"
-              :on-success="handleAvatarSuccess2"
-              :before-upload="beforeAvatarUpload"
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="轮播方式：">
+            <el-select v-model="form.selectionMethod" placeholder="请选择轮播方式">
+              <el-option
+                v-for="item in screenConfig.method"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="轮播图片：">
+            <div class="img-container">
+              <div style="width: 178px; margin-right: 18px">
+                <el-upload
+                  class="avatar-uploader"
+                  action="#"
+                  :show-file-list="false"
+                  :http-request="updateImageSecond"
+                  :on-success="handleAvatarSuccess2"
+                  :before-upload="beforeAvatarUpload"
+                >
+                  <img
+                    v-if="form.imageList[0]"
+                    :src="form.imageList[0]"
+                    class="avatar"
+                  >
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
+                </el-upload>
+                <div style="text-align: center">页面二</div>
+              </div>
+              <div style="width: 178px">
+                <el-upload
+                  class="avatar-uploader"
+                  action="#"
+                  :show-file-list="false"
+                  :http-request="updateImageThird"
+                  :on-success="handleAvatarSuccess3"
+                  :before-upload="beforeAvatarUpload"
+                >
+                  <img
+                    v-if="form.imageList[1]"
+                    :src="form.imageList[1]"
+                    class="avatar"
+                  >
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
+                </el-upload>
+                <div style="text-align: center">页面三</div>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="轮播页面选择：" prop="selectPage">
+            <el-checkbox-group v-model="form.selectPage">
+              <el-checkbox
+                v-for="item in screenConfig.select_page"
+                :key="item.id"
+                :disabled="item.src_path === ''"
+                :label="item.name"
+                name="type"
+              />
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="实验室介绍：">
+            <el-input
+              v-model="form.textarea"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入内容"
+              maxlength="180"
+              show-word-limit
+              autosize
+              class="textarea-input"
+              @input="textareaChanged"
+            />
+          </el-form-item></el-col>
+        <el-col :span="12">
+          <el-form-item label="每月测试量：">
+            <el-input
+              v-model="form.testCount"
+              type="number"
+              class="no-arrow-number-input"
+              placeholder="请输入内容"
+              @input="handleInputTestCount"
+            />
+          </el-form-item>
+          <el-form-item label="实验室设备数：">
+            <el-input
+              v-model="form.deviceCount"
+              type="number"
+              class="no-arrow-number-input"
+              placeholder="请输入内容"
+              @input="handleInputDeviceCount"
+            />
+          </el-form-item>
+          <el-form-item label="外设拓展总数：">
+            <el-input
+              v-model="form.fitterCount"
+              type="number"
+              class="no-arrow-number-input"
+              placeholder="请输入内容"
+              @input="handleInputFitterCount"
+            />
+          </el-form-item>
+          <template v-for="(item, index) in screenConfig.select_page">
+            <el-form-item
+              v-if="isAutoPlay"
+              :key="item.id"
+              :label="`第${index + 1}页轮播时间(S)：`"
             >
-              <img
-                v-if="form.imageList[0]"
-                :src="form.imageList[0]"
-                class="avatar"
-              >
-              <i v-else class="el-icon-plus avatar-uploader-icon" />
-            </el-upload>
-            <div style="text-align: center">页面二</div>
-          </div>
-          <div style="width: 178px">
-            <el-upload
-              class="avatar-uploader"
-              action="#"
-              :show-file-list="false"
-              :http-request="updateImageThird"
-              :on-success="handleAvatarSuccess3"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img
-                v-if="form.imageList[1]"
-                :src="form.imageList[1]"
-                class="avatar"
-              >
-              <i v-else class="el-icon-plus avatar-uploader-icon" />
-            </el-upload>
-            <div style="text-align: center">页面三</div>
-          </div>
-        </div>
-      </el-form-item>
-      <el-form-item label="轮播页面选择：" prop="selectPage">
-        <el-checkbox-group v-model="form.selectPage">
-          <el-checkbox
-            v-for="item in screenConfig.select_page"
-            :key="item.id"
-            :disabled="item.src_path === ''"
-            :label="item.name"
-            name="type"
-          />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="实验室介绍：">
-        <el-input
-          v-model="form.textarea"
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-          maxlength="180"
-          show-word-limit
-          autosize
-          class="textarea-input"
-          @input="textareaChanged"
-        />
-      </el-form-item>
-      <el-form-item label="每月测试量：">
-        <el-input
-          v-model="form.testCount"
-          type="number"
-          class="no-arrow-number-input"
-          placeholder="请输入内容"
-          @input="handleInputTestCount"
-        />
-      </el-form-item>
-      <el-form-item label="实验室设备数：">
-        <el-input
-          v-model="form.deviceCount"
-          type="number"
-          class="no-arrow-number-input"
-          placeholder="请输入内容"
-          @input="handleInputDeviceCount"
-        />
-      </el-form-item>
+              <el-input
+                v-model.number="form.times[index]"
+                class="no-arrow-number-input"
+                type="number"
+                placeholder="请设置轮播时间"
+                @input="handleInput($event)"
+              />
+            </el-form-item>
+          </template>
+        </el-col>
+      </el-row>
       <el-form-item class="btn-container">
         <el-button type="primary" @click="onSubmit('form')">确定</el-button>
         <el-button @click="onCancel">取消</el-button>
@@ -124,7 +139,7 @@
 
 <script>
 import { getScreenConfig, saveScreenConfig, uploadImg } from '@/api/dashboard'
-import { SCREEN_CONFIG } from '@/utils/constant'
+import { SCREEN_CONFIG } from '@/utils/constants'
 
 export default {
   name: 'Configuration',
@@ -144,7 +159,8 @@ export default {
         imageList: ['', ''],
         textarea: '',
         testCount: 0,
-        deviceCount: 0
+        deviceCount: 0,
+        fitterCount: 0
       },
       screenConfig: SCREEN_CONFIG,
       rules: {
@@ -217,6 +233,7 @@ export default {
       this.screenConfig.introduce = this.form.textarea
       this.screenConfig.capacity = Number(this.form.testCount)
       this.screenConfig.is_laboratory = Number(this.form.deviceCount)
+      this.screenConfig.fitter_count = Number(this.form.fitterCount)
       console.log('提交数据', this.screenConfig)
     },
     updateImageThird({ file }) {
@@ -263,6 +280,10 @@ export default {
       }
       return isJPG
     },
+    handleInputFitterCount(value) {
+      this.form.fitterCount = value < 0 ? 0 : value
+      console.log(value, this.form.fitterCount)
+    },
     handleInputTestCount(value) {
       this.form.testCount = value < 0 ? 0 : value
       console.log(value, this.form.testCount)
@@ -296,6 +317,7 @@ export default {
         this.form.textarea = res.data.introduce
         this.form.testCount = res.data.capacity
         this.form.deviceCount = res.data.is_laboratory
+        this.form.fitterCount = res.data.fitter_count
       } catch (error) {
         throw new Error(error.message)
       }
@@ -306,7 +328,7 @@ export default {
 
 <style lang="scss" scoped>
 .config-container {
-  width: 500px;
+  width: 1000px;
   padding: 24px;
 
   // .btn-container {
