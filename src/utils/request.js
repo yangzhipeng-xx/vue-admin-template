@@ -62,6 +62,11 @@ service.interceptors.response.use(
     // const isExcel = res.type && (res.type === 'application/vnd.ms-excel' ||
     //   res.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+    if (res.code === 404) {
+      window.location.replace(window.location.origin + '/404')
+      return
+    }
+
     if (response.data instanceof Blob) {
       if (contentType === 'application/json') {
         return new Promise((resolve, reject) => {

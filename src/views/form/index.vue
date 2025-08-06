@@ -252,7 +252,10 @@
     >
       <el-collapse v-model="activeNames" @change="handleChange">
         <!-- 1. PC外设基本信息 -->
-        <el-collapse-item title="PC外设基本信息" name="1">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('1')}]" /> PC外设基本信息
+          </template>
           <el-form ref="formRef1" :inline="false" :model="formData" label-width="70px" :rules="rules1">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -400,7 +403,10 @@
         </el-collapse-item>
 
         <!-- 2. 任务详情 -->
-        <el-collapse-item title="任务详情" name="2">
+        <el-collapse-item name="2">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('2')}]" /> 任务详情
+          </template>
           <el-form ref="formRef2" :inline="false" :model="formData" label-width="70px" :rules="rules2">
             <el-row :gutter="20">
               <el-col :span="8">
@@ -531,7 +537,12 @@
               </el-col>
             </el-row>
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="8">
+                <el-form-item label="任务批次">
+                  <el-input v-model="formData.task_batch" :disabled="disabled" placeholder="任务批次" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="样品数量">
                   <el-input
                     v-model="formData.sample_num"
@@ -542,7 +553,7 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item label="最新deadline" label-width="100px">
                   <el-date-picker
                     v-model="formData.new_deadline"
@@ -579,7 +590,10 @@
         </el-collapse-item>
 
         <!-- 3. 报告发布详情 -->
-        <el-collapse-item title="报告发布详情" name="3">
+        <el-collapse-item name="3">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('3')}]" /> 报告发布详情
+          </template>
           <el-form ref="formRef3" :inline="false" :model="formData" label-width="70px" :rules="rules3">
             <el-row :gutter="20">
               <el-col :span="8">
@@ -711,7 +725,10 @@
         </el-collapse-item>
 
         <!-- 4. 外设发证详情 -->
-        <el-collapse-item title="外设发证详情" name="4">
+        <el-collapse-item name="4">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('4')}]" /> 外设发证详情
+          </template>
           <el-form ref="formRef4" :inline="false" :model="formData" label-width="70px">
             <el-row :gutter="20">
               <el-col :span="8">
@@ -1023,7 +1040,10 @@
         </el-collapse-item>
 
         <!-- 5. 转测详情 -->
-        <el-collapse-item title="转测详情" name="5">
+        <el-collapse-item name="5">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('5')}]" /> 转测详情
+          </template>
           <el-form ref="formRef5" :inline="false" :model="formData" label-width="70px" :rules="rules5">
             <el-row :gutter="20">
               <el-col :span="8">
@@ -1168,7 +1188,10 @@
         </el-collapse-item>
 
         <!-- 6. 测试详情 -->
-        <el-collapse-item title="测试详情" name="6">
+        <el-collapse-item name="6">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('6')}]" /> 测试详情
+          </template>
           <el-form ref="formRef6" :inline="false" :model="formData" label-width="70px" :rules="rules6">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -1496,6 +1519,15 @@ export default {
     },
     handleChange(val) {
       console.log(val)
+      this.activeNames = val
+    },
+    isActive(name) {
+      // 判断当前项是否处于激活状态
+      if (Array.isArray(this.activeNames)) {
+        return this.activeNames.includes(name)
+      } else {
+        return this.activeNames === name
+      }
     },
     async fetchDataDict() {
       try {
@@ -2006,6 +2038,34 @@ export default {
     .el-dialog__body {
       height: 85vh;
       overflow: auto;
+
+      .el-collapse {
+        .el-collapse-item__content {
+          padding-bottom: 0;
+        }
+
+        .el-collapse-item__arrow {
+          display: none;
+        }
+
+        .rotate {
+          transform: rotate(90deg); /* 旋转90度，使箭头朝下 */
+          transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+
+        .el-icon-caret-right {
+          margin-right: 5px;
+          margin-left: -6px;
+          transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+      }
+
+      .el-form {
+        &-item {
+          margin-bottom: 18px;
+        }
+      }
+
     }
 
     .el-select {
@@ -2014,7 +2074,7 @@ export default {
 
     .long-label {
       .el-form-item__label {
-        line-height: 22px;
+        line-height: 20px;
       }
     }
   }

@@ -222,7 +222,10 @@
       append-to-body
     >
       <el-collapse v-model="activeNames" @change="handleChange">
-        <el-collapse-item title="外设详情" name="1">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('1')}]" /> 外设详情
+          </template>
           <el-form
             class="form form-peripheral-details"
             :inline="false"
@@ -295,7 +298,10 @@
           </el-form>
         </el-collapse-item>
 
-        <el-collapse-item title="问题单详情" name="2">
+        <el-collapse-item name="2">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('2')}]" /> 问题单详情
+          </template>
           <el-form
             class="form form-Q-detail"
             :inline="false"
@@ -549,7 +555,10 @@
           </el-form>
         </el-collapse-item>
 
-        <el-collapse-item title="豁免汇报与跟踪" name="3">
+        <el-collapse-item name="3">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('3')}]" /> 豁免汇报与跟踪
+          </template>
           <el-form
             class="form"
             :inline="false"
@@ -616,7 +625,10 @@
           </el-form>
         </el-collapse-item>
 
-        <el-collapse-item title="豁免申请" name="4">
+        <el-collapse-item name="4">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('4')}]" /> 豁免申请
+          </template>
           <el-form
             class="form"
             :inline="false"
@@ -655,7 +667,10 @@
           </el-form>
         </el-collapse-item>
 
-        <el-collapse-item title="豁免评审结果" name="5">
+        <el-collapse-item name="5">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('5')}]" /> 豁免评审结果
+          </template>
           <el-form
             class="form"
             :inline="false"
@@ -705,7 +720,10 @@
           </el-form>
         </el-collapse-item>
 
-        <el-collapse-item title="豁免遗留问题" name="6">
+        <el-collapse-item name="6">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('6')}]" /> 豁免遗留问题
+          </template>
           <el-form
             class="form"
             :inline="false"
@@ -762,7 +780,10 @@
           </el-form>
         </el-collapse-item>
 
-        <el-collapse-item title="豁免有效性" name="7">
+        <el-collapse-item name="7">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('7')}]" /> 豁免有效性
+          </template>
           <el-form
             class="form"
             :inline="false"
@@ -822,8 +843,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog class="image-dialog" :visible.sync="imageDialogVisible" width="80%" top="2vh">
-      <img style="width: 100%;" :src="imageURL" alt="图片加载失败">
+    <el-dialog class="image-dialog" :visible.sync="imageDialogVisible" width="80%" top="10vh">
+      <img class="image" :src="imageURL" alt="图片加载失败">
     </el-dialog>
   </div>
 </template>
@@ -912,6 +933,15 @@ export default {
   methods: {
     handleChange(val) {
       console.log(val)
+      this.activeNames = val
+    },
+    isActive(name) {
+      // 判断当前项是否处于激活状态
+      if (Array.isArray(this.activeNames)) {
+        return this.activeNames.includes(name)
+      } else {
+        return this.activeNames === name
+      }
     },
     onMouseenter(title) {
       // if (title === '问题截图') {
@@ -1448,6 +1478,33 @@ export default {
     .el-dialog__body {
       height: 85vh;
       overflow: auto;
+
+      .el-collapse {
+        .el-collapse-item__content {
+          padding-bottom: 0;
+        }
+
+        .el-collapse-item__arrow {
+          display: none;
+        }
+
+        .rotate {
+          transform: rotate(90deg); /* 旋转90度，使箭头朝下 */
+          transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+
+        .el-icon-caret-right {
+          margin-right: 5px;
+          margin-left: -6px;
+          transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+      }
+
+      .el-form {
+        &-item {
+          margin-bottom: 18px;
+        }
+      }
     }
   }
 }
@@ -1546,6 +1603,33 @@ export default {
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+  }
+}
+
+.image-dialog {
+  // 对话框整体样式控制
+  ::v-deep .el-dialog {
+    min-width: 400px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    // 设置对话框内容区域高度，确保图片有足够的空间
+    .el-dialog__body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      height: 70vh; // 固定内容区高度
+      overflow: hidden;
+
+      // 图片样式：保持比例，完整显示，居中
+      .image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; // 确保图片不被拉伸
+        border-radius: 8px;
+      }
     }
   }
 }

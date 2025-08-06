@@ -5,6 +5,7 @@ export const PROBLEM_DATE_TIME = [
   'merge_date',
   'problem_first_found_time',
   'update_time',
+  'problem_close_date',
   'created_time'
 ]
 

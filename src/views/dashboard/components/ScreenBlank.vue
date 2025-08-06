@@ -564,7 +564,7 @@ export default {
             align-items: center;
 
             .table-title-item {
-              font-family: MicrosoftYaHei;
+              font-family: "MicrosoftYaHei", sans-serif;
               font-size: 12px;
               font-weight: normal;
               font-stretch: normal;
@@ -573,7 +573,7 @@ export default {
               opacity: 0.7;
 
               span {
-                color: #806c40;
+                color: #e9b546;
               }
 
               &:first-child {

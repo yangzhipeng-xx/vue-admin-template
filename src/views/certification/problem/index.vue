@@ -223,17 +223,22 @@
     >
       <el-collapse v-model="activeNames" @change="handleChange">
         <!-- 1. 问题单详情 -->
-        <el-collapse-item title="问题单详情" name="1">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('1')}]" /> 问题单详情
+          </template>
           <el-form
+            ref="formRef1"
             class="form form-peripheral-details"
             :inline="false"
             :model="formData"
             label-width="70px"
+            :rules="rules1"
           >
             <!-- label-width="180px" -->
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="厂商" label-width="40px">
+                <el-form-item label="厂商" label-width="50px" prop="manufacturer">
                   <el-select
                     v-model="formData.manufacturer"
                     :disabled="disabled"
@@ -249,20 +254,27 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="问题单号">
+                <el-form-item label="问题单号" label-width="78px" prop="problem_number">
                   <el-input v-model="formData.problem_number" :disabled="disabled" placeholder="问题单号" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="外设品类">
-                  <el-input v-model="formData.category" :disabled="disabled" placeholder="外设品类" />
+                <el-form-item label="外设品类" label-width="78px" prop="category">
+                  <el-select v-model="formData.category" :disabled="disabled" placeholder="外设品类">
+                    <el-option
+                      v-for="item in dataDict.category"
+                      :key="item"
+                      :label="item"
+                      :value="item"
+                    />
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="状态" label-width="40px">
+                <el-form-item label="状态" label-width="50px" prop="problem_status">
                   <el-select v-model="formData.problem_status" :disabled="disabled" placeholder="状态">
                     <el-option
                       v-for="item in dataDict.problem_status"
@@ -274,12 +286,12 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="简要描述">
+                <el-form-item label="简要描述" label-width="78px" prop="description">
                   <el-input v-model="formData.description" type="textarea" autosize :disabled="disabled" placeholder="简要描述" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="外设型号">
+                <el-form-item label="外设型号" label-width="78px" prop="model">
                   <el-input v-model="formData.model" :disabled="disabled" placeholder="外设型号" />
                 </el-form-item>
               </el-col>
@@ -302,7 +314,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="问题级别">
+                <el-form-item label="问题级别" label-width="78px" prop="problem_level">
                   <el-select
                     v-model="formData.problem_level"
                     placeholder="问题级别"
@@ -317,7 +329,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="驱动名称/版本" label-width="100px">
+                <el-form-item label="驱动名称/版本" label-width="110px" prop="drive_version">
                   <el-input v-model="formData.drive_version" :disabled="disabled" placeholder="驱动名称/版本" />
                 </el-form-item>
               </el-col>
@@ -325,7 +337,7 @@
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="问题首发时间" label-width="96px">
+                <el-form-item label="问题首发时间" label-width="106px" prop="problem_first_found_time">
                   <el-date-picker
                     v-model="formData.problem_first_found_time"
                     type="datetime"
@@ -335,12 +347,12 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="问题概率">
+                <el-form-item label="问题概率" label-width="78px" prop="problem_probability">
                   <el-input v-model="formData.problem_probability" :disabled="disabled" placeholder="问题概率" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="测试环境(PC系统版本)" label-width="85px" class="long-label">
+                <el-form-item label="测试环境(PC系统版本)" label-width="92px" class="long-label" prop="test_sys_version">
                   <el-input v-model="formData.test_sys_version" :disabled="disabled" placeholder="测试环境(PC系统版本)" />
                 </el-form-item>
               </el-col>
@@ -348,7 +360,7 @@
 
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="发现人" label-width="54px">
+                <el-form-item label="发现人" label-width="64px" prop="found_person">
                   <el-input v-model="formData.found_person" :disabled="disabled" placeholder="发现人" />
                 </el-form-item>
               </el-col>
@@ -358,7 +370,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="网络环境">
+                <el-form-item label="网络环境" label-width="78px" prop="test_sys_network">
                   <el-input v-model="formData.test_sys_network" :disabled="disabled" placeholder="网络环境" />
                 </el-form-item>
               </el-col>
@@ -375,7 +387,10 @@
         </el-collapse-item>
 
         <!-- 2. 问题单分析详情 -->
-        <el-collapse-item title="问题单分析详情" name="2">
+        <el-collapse-item name="2">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('2')}]" /> 问题单分析详情
+          </template>
           <el-form
             class="form form-Q-detail"
             :inline="false"
@@ -499,12 +514,17 @@
         </el-collapse-item>
 
         <!-- 3. 问题单解决详情 -->
-        <el-collapse-item title="问题单解决详情" name="3">
+        <el-collapse-item name="3">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('3')}]" /> 问题单解决详情
+          </template>
           <el-form
+            ref="formRef3"
             class="form"
             :inline="false"
             :model="formData"
             label-width="70px"
+            :rules="rules3"
           >
             <el-row :gutter="20">
               <el-col :span="8">
@@ -552,17 +572,32 @@
                   <el-input v-model="formData.exempt_remark" autosize type="textarea" :disabled="disabled" placeholder="豁免备注" />
                 </el-form-item>
               </el-col>
+              <el-col :span="8">
+                <el-form-item label="问题关闭日期" label-width="106px" prop="problem_close_date">
+                  <el-date-picker
+                    v-model="formData.problem_close_date"
+                    type="datetime"
+                    placeholder="问题关闭日期"
+                    :disabled="disabled"
+                  />
+                </el-form-item>
+              </el-col>
             </el-row>
           </el-form>
         </el-collapse-item>
 
         <!-- 4. 其它 -->
-        <el-collapse-item title="其它" name="4">
+        <el-collapse-item name="4">
+          <template slot="title">
+            <i :class="['el-icon-caret-right', {'rotate': isActive('4')}]" /> 其它
+          </template>
           <el-form
+            ref="formRef4"
             class="form"
             :inline="false"
             :model="formData"
             label-width="70px"
+            :rules="rules4"
           >
             <el-row :gutter="20">
               <el-col :span="8">
@@ -573,6 +608,11 @@
               <el-col :span="8">
                 <el-form-item label="风险标签">
                   <el-input v-model="formData.risk_tag" :disabled="disabled" placeholder="风险标签" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="任务批次" label-width="78px" prop="task_batch">
+                  <el-input v-model="formData.task_batch" :disabled="disabled" placeholder="任务批次" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -612,8 +652,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog class="image-dialog" :visible.sync="imageDialogVisible" width="80%" top="2vh">
-      <img style="width: 100%;" :src="imageURL" alt="图片加载失败">
+    <el-dialog class="image-dialog" :visible.sync="imageDialogVisible" width="80%" top="10vh">
+      <img class="image" :src="imageURL" alt="图片加载失败">
     </el-dialog>
   </div>
 </template>
@@ -683,7 +723,28 @@ export default {
           { pattern: /^\d+$/, message: '工号必须为数字', trigger: 'blur' }
         ]
       },
-      activeNames: ['1']
+      activeNames: ['1'],
+      rules1: {
+        problem_status: [{ required: true, message: '必填项', trigger: 'blur' }],
+        manufacturer: [{ required: true, message: '必填项', trigger: 'change' }],
+        problem_number: [{ required: true, message: '必填项', trigger: 'blur' }],
+        problem_level: [{ required: true, message: '必填项', trigger: 'change' }],
+        problem_probability: [{ required: true, message: '必填项', trigger: 'blur' }],
+        category: [{ required: true, message: '必填项', trigger: 'change' }],
+        model: [{ required: true, message: '必填项', trigger: 'blur' }],
+        drive_version: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_sys_version: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_sys_network: [{ required: true, message: '必填项', trigger: 'blur' }],
+        description: [{ required: true, message: '必填项', trigger: 'blur' }],
+        problem_first_found_time: [{ required: true, message: '必填项', trigger: 'blur' }],
+        found_person: [{ required: true, message: '必填项', trigger: 'blur' }]
+      },
+      rules3: {
+        problem_close_date: [{ required: true, message: '必填项', trigger: 'blur' }]
+      },
+      rules4: {
+        task_batch: [{ required: true, message: '必填项', trigger: 'blur' }]
+      }
 
     }
   },
@@ -701,6 +762,15 @@ export default {
   methods: {
     handleChange(val) {
       console.log(val)
+      this.activeNames = val
+    },
+    isActive(name) {
+      // 判断当前项是否处于激活状态
+      if (Array.isArray(this.activeNames)) {
+        return this.activeNames.includes(name)
+      } else {
+        return this.activeNames === name
+      }
     },
     onMouseenter(title) {
       // if (title === '问题截图') {
@@ -782,6 +852,15 @@ export default {
       return obj
     },
     reset() {
+      if (this.dialogTitle !== '查看') {
+        const refs = ['formRef1', 'formRef3', 'formRef4']
+        refs.forEach(refName => {
+          const formRef = this.$refs[refName]
+          if (formRef && typeof formRef.resetFields === 'function') {
+            formRef.resetFields()
+          }
+        })
+      }
       this.formDialogVisible = false
       this.formData = this.clearObjectValues(this.formData)
       this.activeNames = ['1']
@@ -831,24 +910,45 @@ export default {
      * 新增或编辑提交操作
      */
     addOrEditSubmit() {
-      const data = this.formatDateTimeFieldsForObject(this.formData)
-      // if (this.dialogTitle === '编辑') {
-      //   data.row_vision = this.rowVision
-      // }
-      data.problem_image = data.problem_image.includes(this.baseURL) ? data.problem_image.split(this.baseURL + '/')[1] : data.problem_image
-      data.deal_image = data.deal_image.includes(this.baseURL) ? data.deal_image.split(this.baseURL + '/')[1] : data.deal_image
-      data.serial_number = data.serial_number !== '' ? Number(data.serial_number) : null
-      console.log('提交数据:', data.serial_number)
+      const refs = ['formRef1', 'formRef3', 'formRef4']
+      const promises = refs.map(refName =>
+        new Promise(resolve => {
+          this.$refs[refName].validate(valid => {
+            resolve(valid)
+          })
+        })
+      )
 
-      saveOrUpdateData({ data, id: this.editID }).then(async(response) => {
-        this.formDialogVisible = false
-        this.dialogTitle === '新增'
-          ? this.$message.success('新增成功')
-          : this.$message.success('编辑成功')
-        this.formData = this.clearObjectValues(this.formData)
-        const params = this.getFetchDataParams()
-        await this.fetchProblemData(params)
-        this.reset()
+      Promise.all(promises).then(results => {
+        console.log(results, '所有表单校验结果')
+
+        if (results.every(valid => valid)) {
+          console.log('✅ 所有表单都校验通过，可以提交数据')
+          const data = this.formatDateTimeFieldsForObject(this.formData)
+          // if (this.dialogTitle === '编辑') {
+          //   data.row_vision = this.rowVision
+          // }
+          data.problem_image = data.problem_image.includes(this.baseURL) ? data.problem_image.split(this.baseURL + '/')[1] : data.problem_image
+          data.deal_image = data.deal_image.includes(this.baseURL) ? data.deal_image.split(this.baseURL + '/')[1] : data.deal_image
+          data.serial_number = data.serial_number !== '' ? Number(data.serial_number) : null
+          console.log('提交数据:', data.serial_number)
+
+          saveOrUpdateData({ data, id: this.editID }).then(async(response) => {
+            this.formDialogVisible = false
+            this.dialogTitle === '新增'
+              ? this.$message.success('新增成功')
+              : this.$message.success('编辑成功')
+            this.formData = this.clearObjectValues(this.formData)
+            const params = this.getFetchDataParams()
+            await this.fetchProblemData(params)
+            this.reset()
+          })
+        } else {
+          this.$message.error('请检查表单内容，有必填项为空')
+          const invalidRefs = refs.filter((refName, index) => !results[index])
+          console.log('❌ 以下表单校验未通过:', invalidRefs)
+          this.activeNames = invalidRefs.map(ref => ref.replace(/\D+/g, ''))
+        }
       })
     },
     async submitSetTableHeader() {
@@ -1245,13 +1345,42 @@ export default {
     .el-dialog__body {
       height: 85vh;
       overflow: auto;
+
+      .el-collapse {
+
+        .el-collapse-item__content {
+          padding-bottom: 0;
+        }
+
+        .el-collapse-item__arrow {
+          display: none;
+        }
+
+        .rotate {
+          transform: rotate(90deg); /* 旋转90度，使箭头朝下 */
+          transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+
+        .el-icon-caret-right {
+          margin-right: 5px;
+          margin-left: -6px;
+          transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+        }
+      }
+
+      .el-form {
+        &-item {
+          margin-bottom: 18px;
+        }
+      }
     }
 
     .long-label {
       .el-form-item__label {
-        line-height: 22px;
+        line-height: 20px;
       }
     }
+
   }
 }
 
@@ -1349,6 +1478,33 @@ export default {
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+  }
+}
+
+.image-dialog {
+  // 对话框整体样式控制
+  ::v-deep .el-dialog {
+    min-width: 400px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    // 设置对话框内容区域高度，确保图片有足够的空间
+    .el-dialog__body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      height: 70vh; // 固定内容区高度
+      overflow: hidden;
+
+      // 图片样式：保持比例，完整显示，居中
+      .image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; // 确保图片不被拉伸
+        border-radius: 8px;
+      }
     }
   }
 }
