@@ -1450,11 +1450,9 @@ export default {
 
       .line-clamp-2 {
         display: -webkit-box;
-        display: box;
-        line-clamp: 2;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        box-orient: vertical;
+        line-clamp: 2;
         overflow: hidden;
         text-overflow: ellipsis;
         word-wrap: break-word;
