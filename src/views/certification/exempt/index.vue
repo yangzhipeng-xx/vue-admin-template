@@ -133,17 +133,21 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" align="center" fixed width="50" />
-          <template v-for="item in exemptTableHeaderList">
+          <template v-for="item in exemptTableHeaderList.filter(item => item.is_select)">
             <el-table-column
-              v-if="item.is_select && (item.name !== 'problem_image' && item.name !== 'deal_image')"
-              :key="item.name"
-              :prop="item.name"
+              v-if="EXEMPT_TABLE_WIDTH.includes(item.name)"
+              :key="item.zh_name"
               :label="item.zh_name"
               :width="getWidth(item)"
-            />
+              class="text-column"
+            >
+              <template slot-scope="scope">
+                <div :title="scope.row[item.name]" class="line-clamp-2">{{ scope.row[item.name] }}</div>
+              </template>
+            </el-table-column>
 
             <el-table-column
-              v-else-if="item.is_select && (item.name === 'problem_image' || item.name === 'deal_image')"
+              v-else-if="['problem_image', 'deal_image'].includes(item.name)"
               :key="item.zh_name"
               :label="item.zh_name"
               :width="getWidth(item)"
@@ -151,12 +155,25 @@
             >
               <template slot-scope="scope">
                 <!-- 显示图片 -->
-                <img v-if="scope.row[item.name]" :src="scope.row[item.name]" alt="图片加载失败" style="max-width: 160px; max-height: 160px; cursor: pointer;" @click="previewImageTable(scope.row, item.zh_name)">
+                <img
+                  v-if="scope.row[item.name]"
+                  :src="scope.row[item.name]"
+                  alt="图片加载失败"
+                  style="max-width: 100px; max-height: 100px; cursor: pointer;"
+                  @click="previewImageTable(scope.row, item.zh_name)"
+                >
                 <div v-else>暂无图片</div>
                 <!-- <img src="@/assets/Logo.png" alt="" style="max-width: 160px; max-height: 160px;"> -->
 
               </template>
             </el-table-column>
+            <el-table-column
+              v-else
+              :key="item.name"
+              :prop="item.name"
+              :label="item.zh_name"
+              :width="getWidth(item)"
+            />
           </template>
 
           <el-table-column fixed="right" label="操作" width="130">
@@ -865,7 +882,7 @@ import {
   getDataDict
 } from '@/api/form'
 
-import { EXEMPT_DATE_TIME } from '@/utils/constants'
+import { EXEMPT_DATE_TIME, EXEMPT_TABLE_WIDTH } from '@/utils/constants'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -915,8 +932,8 @@ export default {
           { pattern: /^\d+$/, message: '工号必须为数字', trigger: 'blur' }
         ]
       },
-      activeNames: ['1']
-
+      activeNames: ['1'],
+      EXEMPT_TABLE_WIDTH
     }
   },
   computed: {
@@ -1092,6 +1109,9 @@ export default {
     },
     async submitSetTableHeader() {
       // 发请求
+      if (this.checkedTableHeader.length === 0) {
+        return this.$message.warning('请选择要显示的表头')
+      }
       this.listLoading = true
       if (this.checkAll) {
         this.exemptTableHeaderList.forEach(item => {
@@ -1348,17 +1368,24 @@ export default {
       console.log(this.ids)
     },
     getWidth(item) {
-      let width
-      if (item.zh_name === '问题分析与处理进展') {
-        width = '400px'
-      } else if (item.zh_name === '外设型号' || item.zh_name === '简要描述') {
-        width = '300px'
-      } else if (item.zh_name === '问题截图' || item.zh_name === '处理截图') {
-        width = '180px'
-      } else {
-        width = '100px' // 默认宽度
+      const widthRules = [
+        { keys: [...EXEMPT_TABLE_WIDTH, 'model'], width: '400px' },
+        { keys: ['drive_version'], width: '350px' },
+        { keys: ['test_sys_version'], width: '250px' },
+        { keys: ['problem_number', ...EXEMPT_DATE_TIME], width: '180px' },
+        { keys: ['test_sys_network', 'dtse_develop'], width: '140px' },
+        { keys: ['problem_image', 'deal_image'], width: '120px' }
+      ]
+
+      const defaultWidth = '95px'
+
+      for (const rule of widthRules) {
+        if (rule.keys.includes(item.name)) {
+          return rule.width
+        }
       }
-      return width
+
+      return defaultWidth
     },
     async fetchExemptData(params) {
       try {
@@ -1419,6 +1446,21 @@ export default {
 
     .el-table {
       margin-top: 20px;
+
+      .line-clamp-2 {
+        display: -webkit-box;
+        display: box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        line-height: 1.4;
+        max-height: 2.8em;
+        cursor: pointer;
+      }
     }
 
     .el-menu-item {

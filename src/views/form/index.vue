@@ -178,9 +178,20 @@
           @selection-change="handleSelectionChange"
         >
           <el-table-column fixed type="selection" align="center" width="50" />
-          <template v-for="item in tableHeaderList">
+          <template v-for="item in tableHeaderList.filter(item => item.is_select)">
             <el-table-column
-              v-if="item.is_select"
+              v-if="TABLE_WIDTH.includes(item.name)"
+              :key="item.zh_name"
+              :label="item.zh_name"
+              :width="getWidth(item)"
+              class="text-column"
+            >
+              <template slot-scope="scope">
+                <div :title="scope.row[item.name]" class="line-clamp-2">{{ scope.row[item.name] }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-else
               :key="item.name"
               :prop="item.name"
               :label="item.zh_name"
@@ -1420,7 +1431,7 @@ import {
   getDataDict,
   saveHeaderConfig
 } from '@/api/form'
-import { DATE_TIME_DATA, INT_DATA } from '@/utils/constants'
+import { DATE_TIME_DATA, INT_DATA, TABLE_WIDTH } from '@/utils/constants'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
@@ -1496,7 +1507,8 @@ export default {
         test_status: [{ required: true, message: '必填项', trigger: 'change' }],
         test_start_time: [{ required: true, message: '必填项', trigger: 'blur' }],
         test_finish_time: [{ required: true, message: '必填项', trigger: 'blur' }]
-      }
+      },
+      TABLE_WIDTH
     }
   },
   computed: {},
@@ -1507,15 +1519,29 @@ export default {
   },
   methods: {
     getWidth(item) {
-      const width = '170px'
-      // if (item.zh_name === '序号' || arr.includes(item.zh_name)) {
-      //   width = '50px'
-      // } else if (item.zh_name === '*品类' || item.zh_name === '*品牌') {
-      //   width = '120px'
-      // } else {
-      //   width = '160px' // 默认宽度
-      // }
-      return width
+      const longLabel = ['series_certification_type', 'init_deadline', 'drive_download_method']
+      const widthRules = [
+        { keys: ['sign'], width: '380px' },
+        { keys: ['init_deadline'], width: '240px' },
+        { keys: [...TABLE_WIDTH], width: '400px' },
+        { keys: ['drive_download_method'], width: '310px' },
+        { keys: ['plan_finish_time'], width: '200px' },
+        { keys: ['problem_number', 'is_certification', ...DATE_TIME_DATA], width: '180px' },
+        { keys: ['product_name', 'model'], width: '170px' },
+        { keys: ['is_submit', 'test_user'], width: '155px' },
+        { keys: ['task_tag', 'is_pla_account', 'harmonyos_sys_version', 'test_manufacturer_user', 'transfer_test_num'], width: '145px' },
+        { keys: ['manufacturer', 'drive_name', 'test_model', 'pla_is_certification', 'is_exempt', 'record', 'is_new', 'report_publish_email'], width: '110px' }
+      ]
+
+      const defaultWidth = '95px'
+
+      for (const rule of widthRules) {
+        if (rule.keys.includes(item.name)) {
+          return rule.width
+        }
+      }
+
+      return defaultWidth
     },
     handleChange(val) {
       console.log(val)
@@ -1976,6 +2002,21 @@ export default {
 
     .el-table {
       margin-top: 20px;
+
+      .line-clamp-2 {
+        display: -webkit-box;
+        display: box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        line-height: 1.4;
+        max-height: 2.8em;
+        cursor: pointer;
+      }
     }
 
     .el-menu-item {

@@ -298,6 +298,20 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="标准外设厂商列表" label-width="124px">
+              <el-select v-model="reportForm.peripheral_device_manufacturer" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in dataDict.manufacturer"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <!-- <el-form-item label="整体进展">
           <el-input v-model="reportForm.process" placeholder="请输入内容" />
@@ -342,8 +356,10 @@ export default {
         project_plan: '',
         last_plan: '',
         exchange_a_day_off: [],
-        hols: []
+        hols: [],
+        peripheral_device_manufacturer: []
       },
+      reportFormCopy: {},
       imageURL: '',
       imageDialogVisible: false,
       hover: false,
@@ -514,6 +530,7 @@ export default {
     }
     await this.fetchReport()
     await this.fetchEditConfig()
+    await this.fetchDataDict()
     this.loading = false
   },
   methods: {
@@ -579,6 +596,7 @@ export default {
     },
     onSubmit() {
       // 提交逻辑
+      // this.loading = true
       console.log('提交周报', this.reportForm)
       const data = JSON.parse(JSON.stringify(this.reportForm))
       if (data.exchange_a_day_off.length > 0) {
@@ -594,8 +612,10 @@ export default {
       editConfig(data).then(async(res) => {
         console.log(res, '保存成功')
         this.$message.success('保存成功')
-        this.reportFormDialogVisible = false
         await this.fetchReport()
+        await this.fetchEditConfig()
+        this.reportFormDialogVisible = false
+        // this.loading = false
       })
     },
     downloadExcel(response) {
@@ -648,6 +668,7 @@ export default {
       // 编辑周报逻辑
       console.log('编辑周报')
       this.reportFormDialogVisible = true
+      this.reportForm = { ...this.reportFormCopy }
     },
     async fetchReport() {
       try {
@@ -675,6 +696,7 @@ export default {
           data.hols = data.hols.map((dateStr) => dayjs(dateStr).toDate())
         }
         this.reportForm = data
+        this.reportFormCopy = data
       } catch (error) {
         console.log(error)
       }
@@ -900,6 +922,10 @@ export default {
 .report-form-dialog {
   .report-form {
     ::v-deep .el-date-editor {
+      width: 100%;
+    }
+
+    ::v-deep .el-select {
       width: 100%;
     }
   }

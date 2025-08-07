@@ -1,3 +1,19 @@
+
+export const PROBLEM_TABLE_WIDTH = [
+  'description',
+  'contrast_test',
+  'problem_details',
+  'analysis_and_progress',
+  'problem_reason',
+  'merge_plan',
+  'impact_assessment',
+  'review_conclusion',
+  'certification_must_be_solved',
+  'exempt_remark',
+  'risk_reason',
+  'hm_in_remark'
+]
+
 export const PROBLEM_INT_DATA = [
   'serial_number'
 ]
@@ -7,6 +23,25 @@ export const PROBLEM_DATE_TIME = [
   'update_time',
   'problem_close_date',
   'created_time'
+]
+
+export const EXEMPT_TABLE_WIDTH = [
+  'description',
+  'contrast_test',
+  'problem_details',
+  'analysis_and_progress',
+  'problem_reason',
+  'merge_plan',
+  'impact_assessment',
+  'review_conclusion',
+  'problem_impact',
+  'exempt_type',
+  'exempt_reason',
+  'meeting_suggestion',
+  'exempt_progress',
+  'remaining_matters',
+  'unresolved_impact',
+  'effective_remark'
 ]
 
 export const EXEMPT_DATE_TIME = [
@@ -61,6 +96,23 @@ export const SCREEN_CONFIG = {
     }
   ]
 }
+
+export const TABLE_WIDTH = [
+  'support_function',
+  'product_function',
+  'transfer_test_remark',
+  'soft_network',
+  'hardware_network',
+  'self_check',
+  'report_remark',
+  'certification_remark',
+  'certification_remark_two',
+  'certification_remark_three',
+  'certification_remark_four',
+  'certification_remark_five',
+  'no_apply_for_but_pass',
+  'in_remark'
+]
 
 export const INT_DATA = [
   'serial_number',
