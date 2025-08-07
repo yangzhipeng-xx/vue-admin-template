@@ -1243,7 +1243,7 @@ export default {
         { keys: ['test_sys_version'], width: '250px' },
         { keys: ['problem_number', ...PROBLEM_DATE_TIME], width: '180px' },
         { keys: ['test_sys_network', 'dtse_develop'], width: '140px' },
-        { keys: ['problem_image', 'deal_image'], width: '120px' }
+        { keys: ['problem_image', 'deal_image', 'dev_develop'], width: '120px' }
       ]
 
       const defaultWidth = '95px'

@@ -1373,8 +1373,9 @@ export default {
         { keys: ['drive_version'], width: '350px' },
         { keys: ['test_sys_version'], width: '250px' },
         { keys: ['problem_number', ...EXEMPT_DATE_TIME], width: '180px' },
-        { keys: ['test_sys_network', 'dtse_develop'], width: '140px' },
-        { keys: ['problem_image', 'deal_image'], width: '120px' }
+        { keys: ['exempt_sys_version', 'review_exempt_sys_version'], width: '170px' },
+        { keys: ['test_sys_network', 'dtse_develop', 'presenter', 'review_meeting', 'apply_exempt_list', 'exempt_pass_list', 'exempt_reject_list'], width: '140px' },
+        { keys: ['problem_image', 'deal_image', 'exempt_status'], width: '120px' }
       ]
 
       const defaultWidth = '95px'

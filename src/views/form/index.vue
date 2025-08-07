@@ -1519,10 +1519,9 @@ export default {
   },
   methods: {
     getWidth(item) {
-      const longLabel = ['series_certification_type', 'init_deadline', 'drive_download_method']
       const widthRules = [
         { keys: ['sign'], width: '380px' },
-        { keys: ['init_deadline'], width: '240px' },
+        { keys: ['init_deadline', 'series_certification_type'], width: '240px' },
         { keys: [...TABLE_WIDTH], width: '400px' },
         { keys: ['drive_download_method'], width: '310px' },
         { keys: ['plan_finish_time'], width: '200px' },
