@@ -120,7 +120,15 @@ export const INT_DATA = [
   'too_high',
   'high',
   'low',
-  'warn'
+  'warn',
+  'too_high_two',
+  'too_high_three',
+  'high_two',
+  'high_three',
+  'low_two',
+  'low_three',
+  'warn_two',
+  'warn_three'
 ]
 
 export const DATE_TIME_DATA = [

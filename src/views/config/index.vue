@@ -1,6 +1,6 @@
 <template>
   <div>
-    Config 未完待续
+    <!-- Config 未完待续 -->
   </div>
 </template>
 

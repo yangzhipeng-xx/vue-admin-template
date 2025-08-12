@@ -82,7 +82,7 @@
             <th>问题解决周期(天)</th>
             <th>DTSE责任人</th>
             <th>评审发证款数</th>
-            <th>最终评审日</th>
+            <th>最新评审日</th>
             <th>评审发证周期(天)</th>
             <th>平台已发证款数</th>
             <th>待测试款数</th>
@@ -108,7 +108,7 @@
             <td>{{ row.finish_test_num }}</td>
             <td class="long-text">{{ row.test_batch }}</td>
             <td>{{ row.test_batch_cycle }}</td>
-            <td v-if="row.test_userRowspan > 0" :rowspan="row.test_userRowspan">
+            <td>
               {{ row.test_user }}
             </td>
             <td>
@@ -117,7 +117,7 @@
             <td>{{ row.block_num }}</td>
             <td>{{ row.problem_deal_date }}</td>
             <td>{{ row.problem_deal_date_cycle }}</td>
-            <td v-if="row.dtse_userRowspan > 0" :rowspan="row.dtse_userRowspan">
+            <td>
               {{ row.dtse_user }}
             </td>
             <td>
@@ -141,7 +141,7 @@
             <td>
               {{ row.wait_review_num }}
             </td>
-            <td>
+            <td v-if="row.exempt_numRowspan > 0" :rowspan="row.exempt_numRowspan">
               {{ row.exempt_num }}
             </td>
           </tr>
@@ -468,7 +468,13 @@ export default {
       }
 
       // 需要合并的字段
-      const fieldsToMerge = ['category', 'manufacturer', 'test_user', 'dtse_user']
+      const fieldsToMerge = [
+        'category',
+        'manufacturer',
+        'exempt_num'
+        // 'test_user',
+        // 'dtse_user'
+      ]
       const fieldState = {}
 
       // 初始化 fieldState

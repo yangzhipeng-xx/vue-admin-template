@@ -151,6 +151,13 @@
           </div>
           <div>
             <el-button
+              icon="el-icon-download"
+              type="success"
+              size="mini"
+              style="margin-right: 10px"
+              @click="handleBatchDownload"
+            >文件批量下载</el-button>
+            <el-button
               icon="el-icon-setting"
               type="success"
               size="mini"
@@ -173,7 +180,7 @@
           element-loading-text="Loading"
           fit
           highlight-current-row
-          max-height="600"
+          max-height="630"
           border
           @selection-change="handleSelectionChange"
         >
@@ -188,6 +195,17 @@
             >
               <template slot-scope="scope">
                 <div :title="scope.row[item.name]" class="line-clamp-2">{{ scope.row[item.name] }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-else-if="['test_report', 'test_report_two', 'test_report_three'].includes(item.name)"
+              :key="item.zh_name"
+              :label="item.zh_name"
+              :width="getWidth(item)"
+              class="text-column"
+            >
+              <template slot-scope="scope">
+                <div v-for="(name, index) in getString(scope.row[item.name])" :key="name +index">{{ name }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -371,11 +389,11 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label="系列化发证类型（主测/扩展）" class="long-label" label-width="110px">
+                <el-form-item label="系列化发证类型（主测/扩展）" class="long-label" label-width="122px" prop="series_certification_type">
                   <el-input
                     v-model="formData.series_certification_type"
                     :disabled="disabled"
-                    placeholder="系列化发证类型（主测/扩展）"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -421,11 +439,11 @@
           <el-form ref="formRef2" :inline="false" :model="formData" label-width="70px" :rules="rules2">
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="实验室厂商接口人" label-width="125px">
+                <el-form-item label="实验室厂商接口人" label-width="134px" prop="test_manufacturer_user">
                   <el-input
                     v-model="formData.test_manufacturer_user"
                     :disabled="disabled"
-                    placeholder="实验室厂商接口人"
+                    placeholder="必填项"
                   />
                 </el-form-item>
               </el-col>
@@ -549,8 +567,8 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item label="任务批次">
-                  <el-input v-model="formData.task_batch" :disabled="disabled" placeholder="任务批次" />
+                <el-form-item label="任务批次" label-width="78px" prop="task_batch">
+                  <el-input v-model="formData.task_batch" :disabled="disabled" placeholder="必填项" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -607,8 +625,8 @@
           </template>
           <el-form ref="formRef3" :inline="false" :model="formData" label-width="70px" :rules="rules3">
             <el-row :gutter="20">
-              <el-col :span="8">
-                <el-form-item label="测试结论" prop="test_conclusion" label-width="78px">
+              <el-col :span="6">
+                <el-form-item label="测试结论1" prop="test_conclusion" label-width="86px">
                   <el-input
                     v-model="formData.test_conclusion"
                     :disabled="disabled"
@@ -616,7 +634,25 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="6">
+                <el-form-item label="测试结论2" label-width="78px">
+                  <el-input
+                    v-model="formData.test_conclusion_two"
+                    :disabled="disabled"
+                    placeholder="测试结论2"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="测试结论3" label-width="78px">
+                  <el-input
+                    v-model="formData.test_conclusion_three"
+                    :disabled="disabled"
+                    placeholder="测试结论3"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
                 <el-form-item label="测试人" label-width="64px" prop="test_user">
                   <el-input
                     v-model="formData.test_user"
@@ -625,7 +661,119 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <el-form-item label="测试报告1" label-width="86px" prop="test_report">
+                  <!-- <el-input
+                    v-model="formData.test_report"
+                    :disabled="disabled"
+                    placeholder="必填项"
+                  /> -->
+                  <!--        -->
+                  <el-upload
+                    ref="upload"
+                    class="upload-demo"
+                    action="#"
+                    accept=".xlsx,.xls"
+                    :before-upload="beforeUploadTestReport"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :before-remove="beforeRemove"
+                    :on-change="handleChangeTestReport"
+                    :limit="5"
+                    multiple
+                    :on-exceed="handleExceed"
+                    :file-list="fileList"
+                    :auto-upload="false"
+                    :disabled="disabled"
+                  >
+                    <el-button size="small" type="primary">选择文件</el-button>
+                    <el-button
+                      size="small"
+                      type="success"
+                      icon="el-icon-upload"
+                      :disabled="isDisabled"
+                      style="margin-left: 10px"
+                      @click.stop="submitUpload(fileList, 1)"
+                    >
+                      {{ uploading ? '上传中...' : '批量上传' }}
+                    </el-button>
+                    <div slot="tip" style="line-height: 20px;" class="el-upload__tip">选择文件后，请点击“批量上传”按钮进行上传</div>
+                  </el-upload>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="测试报告2" label-width="76px">
+                  <el-upload
+                    ref="upload"
+                    class="upload-demo"
+                    action="#"
+                    accept=".xlsx,.xls"
+                    :before-upload="beforeUploadTestReport2"
+                    :on-preview="handlePreview2"
+                    :on-remove="handleRemove2"
+                    :before-remove="beforeRemove2"
+                    :on-change="handleChangeTestReport2"
+                    :limit="5"
+                    multiple
+                    :on-exceed="handleExceed2"
+                    :file-list="fileList2"
+                    :auto-upload="false"
+                    :disabled="disabled"
+                  >
+                    <el-button size="small" type="primary">选择文件</el-button>
+                    <el-button
+                      size="small"
+                      type="success"
+                      icon="el-icon-upload"
+                      :disabled="isDisabled2"
+                      style="margin-left: 10px"
+                      @click.stop="submitUpload(fileList2, 2)"
+                    >
+                      {{ uploading2 ? '上传中...' : '批量上传' }}
+                    </el-button>
+                    <div slot="tip" style="line-height: 20px;" class="el-upload__tip">选择文件后，请点击“批量上传”按钮进行上传</div>
+                  </el-upload>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="测试报告3" label-width="76px">
+                  <el-upload
+                    ref="upload"
+                    class="upload-demo"
+                    action="#"
+                    accept=".xlsx,.xls"
+                    :before-upload="beforeUploadTestReport3"
+                    :on-preview="handlePreview3"
+                    :on-remove="handleRemove3"
+                    :before-remove="beforeRemove3"
+                    :on-change="handleChangeTestReport3"
+                    :limit="5"
+                    multiple
+                    :on-exceed="handleExceed3"
+                    :file-list="fileList3"
+                    :auto-upload="false"
+                    :disabled="disabled"
+                  >
+                    <el-button size="small" type="primary">选择文件</el-button>
+                    <el-button
+                      size="small"
+                      type="success"
+                      icon="el-icon-upload"
+                      :disabled="isDisabled3"
+                      style="margin-left: 10px"
+                      @click.stop="submitUpload(fileList3, 3)"
+                    >
+                      {{ uploading3 ? '上传中...' : '批量上传' }}
+                    </el-button>
+                    <div slot="tip" style="line-height: 20px;" class="el-upload__tip">选择文件后，请点击“批量上传”按钮进行上传</div>
+                  </el-upload>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
                 <el-form-item label="报告发布邮件" label-width="96px">
                   <el-input
                     v-model="formData.report_publish_email"
@@ -634,10 +782,11 @@
                   />
                 </el-form-item>
               </el-col>
+
             </el-row>
 
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="6">
                 <el-form-item label="致命问题数" label-width="92px" prop="too_high">
                   <el-input
                     v-model="formData.too_high"
@@ -648,7 +797,29 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="6">
+                <el-form-item label="致命问题数2" label-width="92px">
+                  <el-input
+                    v-model="formData.too_high_two"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="致命问题数2"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="致命问题数3" label-width="92px">
+                  <el-input
+                    v-model="formData.too_high_three"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="致命问题数3"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
                 <el-form-item label="报告评审日(报告名前缀)" label-width="93px" class="long-label">
                   <el-date-picker
                     v-model="formData.report_date"
@@ -658,10 +829,11 @@
                   />
                 </el-form-item>
               </el-col>
+
             </el-row>
 
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="6">
                 <el-form-item label="严重问题数" label-width="92px" prop="high">
                   <el-input
                     v-model="formData.high"
@@ -672,7 +844,29 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="6">
+                <el-form-item label="严重问题数2" label-width="92px">
+                  <el-input
+                    v-model="formData.high_two"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="严重问题数2"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="严重问题数3" label-width="92px">
+                  <el-input
+                    v-model="formData.high_three"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="严重问题数3"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
                 <el-form-item label="初稿报告发布时间" label-width="124px">
                   <el-date-picker
                     v-model="formData.init_publish_time"
@@ -682,10 +876,11 @@
                   />
                 </el-form-item>
               </el-col>
+
             </el-row>
 
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="6">
                 <el-form-item label="一般问题数" label-width="92px" prop="low">
                   <el-input
                     v-model="formData.low"
@@ -696,7 +891,29 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="6">
+                <el-form-item label="一般问题数2" label-width="92px">
+                  <el-input
+                    v-model="formData.low_two"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="一般问题数2"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="一般问题数3" label-width="92px">
+                  <el-input
+                    v-model="formData.low_three"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="一般问题数3"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
                 <el-form-item label="终版报告发布时间" label-width="124px">
                   <el-date-picker
                     v-model="formData.publish_time"
@@ -707,9 +924,8 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="6">
                 <el-form-item label="提示问题数" label-width="92px" prop="warn">
                   <el-input
                     v-model="formData.warn"
@@ -720,14 +936,60 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <el-form-item label="报告备注">
+              <el-col :span="6">
+                <el-form-item label="提示问题数2" label-width="92px">
+                  <el-input
+                    v-model="formData.warn_two"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="提示问题数2"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="提示问题数3" label-width="92px">
+                  <el-input
+                    v-model="formData.warn_three"
+                    class="no-arrow-number-input"
+                    type="number"
+                    :disabled="disabled"
+                    placeholder="提示问题数3"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <el-form-item label="报告备注1" label-width="76px">
                   <el-input
                     v-model="formData.report_remark"
                     autosize
                     type="textarea"
                     :disabled="disabled"
-                    placeholder="报告备注"
+                    placeholder="报告备注1"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="报告备注2" label-width="76px">
+                  <el-input
+                    v-model="formData.report_remark_two"
+                    autosize
+                    type="textarea"
+                    :disabled="disabled"
+                    placeholder="报告备注2"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="报告备注3" label-width="76px">
+                  <el-input
+                    v-model="formData.report_remark_three"
+                    autosize
+                    type="textarea"
+                    :disabled="disabled"
+                    placeholder="报告备注3"
                   />
                 </el-form-item>
               </el-col>
@@ -740,7 +1002,7 @@
           <template slot="title">
             <i :class="['el-icon-caret-right', {'rotate': isActive('4')}]" /> 外设发证详情
           </template>
-          <el-form ref="formRef4" :inline="false" :model="formData" label-width="70px">
+          <el-form ref="formRef4" :rules="rules4" :inline="false" :model="formData" label-width="70px">
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="发证评审日" label-width="82px">
@@ -753,10 +1015,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="阻塞发证厂商问题状态" label-width="152px">
+                <el-form-item label="阻塞发证厂商问题状态" label-width="162px" prop="is_certification">
                   <el-select
                     v-model="formData.is_certification"
-                    placeholder="阻塞发证厂商问题状态"
+                    placeholder="必填项"
                     :disabled="disabled"
                   >
                     <el-option
@@ -1429,7 +1691,9 @@ import {
   importExcel,
   exportExcel,
   getDataDict,
-  saveHeaderConfig
+  saveHeaderConfig,
+  uploadFiles,
+  downloadFiles
 } from '@/api/form'
 import { DATE_TIME_DATA, INT_DATA, TABLE_WIDTH } from '@/utils/constants'
 import dayjs from 'dayjs'
@@ -1439,6 +1703,14 @@ dayjs.extend(utc)
 export default {
   filters: {},
   data() {
+    // 自定义校验规则：检查 fileList 是否有文件
+    const validateFileUpload = (rule, value, callback) => {
+      if (!this.formData.test_report || this.formData.test_report.length === 0) {
+        callback(new Error('请点击“批量上传”按钮进行上传'))
+      } else {
+        callback() // 校验通过
+      }
+    }
     return {
       list: [],
       listLoading: true,
@@ -1483,12 +1755,15 @@ export default {
       rules1: {
         category: [{ required: true, message: '必填项', trigger: 'blur' }],
         manufacturer: [{ required: true, message: '必填项', trigger: 'change' }],
-        brand: [{ required: true, message: '必填项', trigger: 'blur' }]
+        brand: [{ required: true, message: '必填项', trigger: 'blur' }],
+        series_certification_type: [{ required: true, message: '必填项', trigger: 'blur' }]
       },
       rules2: {
         task_send_time: [{ required: true, message: '必填项', trigger: 'blur' }],
         is_new: [{ required: true, message: '必填项', trigger: 'change' }],
-        arrive_time: [{ required: true, message: '必填项', trigger: 'blur' }]
+        arrive_time: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_manufacturer_user: [{ required: true, message: '必填项', trigger: 'blur' }],
+        task_batch: [{ required: true, message: '必填项', trigger: 'blur' }]
       },
       rules3: {
         test_conclusion: [{ required: true, message: '必填项', trigger: 'blur' }],
@@ -1496,7 +1771,11 @@ export default {
         too_high: [{ required: true, message: '必填项', trigger: 'blur' }],
         high: [{ required: true, message: '必填项', trigger: 'blur' }],
         low: [{ required: true, message: '必填项', trigger: 'blur' }],
-        warn: [{ required: true, message: '必填项', trigger: 'blur' }]
+        warn: [{ required: true, message: '必填项', trigger: 'blur' }],
+        test_report: [{ required: true, validator: validateFileUpload, trigger: 'change' }]
+      },
+      rules4: {
+        is_certification: [{ required: true, message: '必填项', trigger: 'change' }]
       },
       rules5: {
         drive_download_method: [{ required: true, message: '必填项', trigger: 'blur' }],
@@ -1508,22 +1787,252 @@ export default {
         test_start_time: [{ required: true, message: '必填项', trigger: 'blur' }],
         test_finish_time: [{ required: true, message: '必填项', trigger: 'blur' }]
       },
-      TABLE_WIDTH
+      TABLE_WIDTH,
+      fileList: [],
+      uploading: false,
+      fileList2: [],
+      uploading2: false,
+      fileList3: [],
+      uploading3: false
     }
   },
-  computed: {},
+  computed: {
+    isDisabled() {
+      return this.fileList.length === 0 ||
+      this.uploading || this.disabled ||
+      this.fileList.every(file => file.status === 'success')
+    },
+    isDisabled2() {
+      return this.fileList2.length === 0 ||
+      this.uploading2 || this.disabled ||
+      this.fileList2.every(file => file.status === 'success')
+    },
+    isDisabled3() {
+      return this.fileList3.length === 0 ||
+      this.uploading3 || this.disabled ||
+      this.fileList3.every(file => file.status === 'success')
+    }
+  },
   async created() {
     await this.fetchDataDict()
     await this.fetchExcelHeader()
     await this.fetchExcelData()
   },
   methods: {
+    handleBatchDownload() {
+      this.listLoading = true
+      const data = this.getExportExcelData()
+      console.log('批量下载:', data)
+
+      downloadFiles(data)
+        .then((response) => {
+          console.log(response)
+          this.downloadExcel(response)
+        })
+        .catch((error) => {
+          console.error('批量下载错误:', error)
+          this.$message.error('批量下载失败')
+        })
+        .finally(() => {
+          this.listLoading = false
+        })
+    },
+    // 3
+    handleChangeTestReport3(file, fileList) {
+      this.fileList3 = fileList
+      console.log(this.fileList3, 'handleChangeTestReport3')
+    },
+
+    // 文件类型校验
+    beforeUploadTestReport3(file) {
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/vnd.ms-excel' // .xls
+      ]
+      const isExcel = allowedTypes.includes(file.type)
+      if (!isExcel) {
+        this.$message.error('只能上传 Excel 文件（.xlsx 或 .xls）!')
+      }
+      return isExcel
+    },
+
+    // 超出数量限制提示
+    handleExceed3(files, fileList) {
+      this.$message.warning(`最多上传 5 个文件，当前共 ${files.length + fileList.length} 个`)
+    },
+
+    // 移除文件确认
+    beforeRemove3(file, fileList) {
+      if (file.status === 'success') {
+        return this.$confirm(`确定移除 ${file.name}？`)
+      }
+      return true
+    },
+
+    handlePreview3(file) {
+      console.log('预览文件:', file)
+    },
+
+    handleRemove3(file, fileList) {
+      console.log('已移除:', file.name)
+      this.fileList3 = fileList
+      this.formData.test_report_three = this.fileList3.map(file => {
+        return {
+          filename: file.name,
+          file_path: file.url
+        }
+      })
+      console.log('当前文件列表:', this.fileList3, this.formData.test_report_three)
+    },
+    // 2
+    handleChangeTestReport2(file, fileList) {
+      this.fileList2 = fileList
+      console.log(this.fileList2, 'handleChangeTestReport2')
+    },
+
+    // 文件类型校验
+    beforeUploadTestReport2(file) {
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/vnd.ms-excel' // .xls
+      ]
+      const isExcel = allowedTypes.includes(file.type)
+      if (!isExcel) {
+        this.$message.error('只能上传 Excel 文件（.xlsx 或 .xls）!')
+      }
+      return isExcel
+    },
+
+    // 超出数量限制提示
+    handleExceed2(files, fileList) {
+      this.$message.warning(`最多上传 5 个文件，当前共 ${files.length + fileList.length} 个`)
+    },
+
+    // 移除文件确认
+    beforeRemove2(file, fileList) {
+      if (file.status === 'success') {
+        return this.$confirm(`确定移除 ${file.name}？`)
+      }
+      return true
+    },
+
+    handlePreview2(file) {
+      console.log('预览文件:', file)
+    },
+
+    handleRemove2(file, fileList) {
+      console.log('已移除:', file.name)
+      this.fileList2 = fileList
+      this.formData.test_report_two = this.fileList2.map(file => {
+        return {
+          filename: file.name,
+          file_path: file.url
+        }
+      })
+      console.log('当前文件列表:', this.fileList2, this.formData.test_report_two)
+    },
+    // 1
+    handleChangeTestReport(file, fileList) {
+      this.fileList = fileList
+      console.log(this.fileList, 'handleChangeTestReport')
+    },
+
+    // 文件类型校验
+    beforeUploadTestReport(file) {
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/vnd.ms-excel' // .xls
+      ]
+      const isExcel = allowedTypes.includes(file.type)
+      if (!isExcel) {
+        this.$message.error('只能上传 Excel 文件（.xlsx 或 .xls）!')
+      }
+      return isExcel
+    },
+
+    // 超出数量限制提示
+    handleExceed(files, fileList) {
+      this.$message.warning(`最多上传 5 个文件，当前共 ${files.length + fileList.length} 个`)
+    },
+
+    // 移除文件确认
+    beforeRemove(file, fileList) {
+      if (file.status === 'success') {
+        return this.$confirm(`确定移除 ${file.name}？`)
+      }
+      return true
+    },
+
+    handlePreview(file) {
+      console.log('预览文件:', file)
+    },
+
+    handleRemove(file, fileList) {
+      console.log('已移除:', file.name)
+      this.fileList = fileList
+      this.formData.test_report = this.fileList.map(file => {
+        return {
+          filename: file.name,
+          file_path: file.url
+        }
+      })
+      console.log('当前文件列表:', this.fileList, this.formData.test_report)
+    },
+
+    // ✅ 核心：批量上传
+    async submitUpload(fileList, num) {
+      if (fileList.every(file => file.status === 'success')) {
+        return
+      }
+      // 动态映射 num → loading 变量名 和 formData 字段名
+      const config = {
+        1: { loading: 'uploading', field: 'test_report' },
+        2: { loading: 'uploading2', field: 'test_report_two' },
+        3: { loading: 'uploading3', field: 'test_report_three' }
+      }
+      console.log('上传文件列表:', fileList, '配置:', config[num])
+
+      const { loading, field } = config[num]
+
+      // 设置 loading 状态（动态）
+      this[loading] = true
+
+      const formData = new FormData()
+      fileList.forEach(file => {
+        if (file.status === 'success') {
+          return // 已经上传成功的文件不再处理
+        }
+        formData.append('files', file.raw || file)
+      })
+
+      try {
+        const res = await uploadFiles(formData)
+        if (res.code === 200) {
+          this.$message.success('文件上传成功')
+          // 动态更新 formData 字段
+          this.formData[field] = this.formData[field].concat(res.data)
+
+          // 标记文件状态
+          fileList.forEach(file => {
+            file.status = 'success'
+          })
+        } else {
+          this.$message.error(res.message || '上传失败')
+        }
+      } catch (error) {
+        console.error('上传失败:', error)
+        this.$message.error('上传失败')
+      } finally {
+        // 关闭 loading（动态）
+        this[loading] = false
+      }
+    },
     getWidth(item) {
       const widthRules = [
         { keys: ['sign'], width: '380px' },
         { keys: ['init_deadline', 'series_certification_type'], width: '240px' },
         { keys: [...TABLE_WIDTH], width: '400px' },
-        { keys: ['drive_download_method'], width: '310px' },
+        { keys: ['drive_download_method', 'test_report', 'test_report_two', 'test_report_three'], width: '310px' },
         { keys: ['plan_finish_time'], width: '200px' },
         { keys: ['problem_number', 'is_certification', ...DATE_TIME_DATA], width: '180px' },
         { keys: ['product_name', 'model'], width: '170px' },
@@ -1574,6 +2083,8 @@ export default {
       console.log(key, keyPath)
     },
     downloadExcel(response) {
+      console.log(response, 'downloadExcel')
+
       const contentDisposition = response.headers['content-disposition']
 
       let fileName = 'export.xlsx' // 默认文件名
@@ -1591,10 +2102,11 @@ export default {
           }
         }
       }
+      const type = response.data.type
 
       const blob = new Blob([response.data], {
         // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        type: response.data.type
+        type
       })
 
       const downloadUrl = window.URL.createObjectURL(blob)
@@ -1605,7 +2117,8 @@ export default {
       link.click()
       link.remove()
       this.listLoading = false
-      this.$message.success('导出成功')
+      const msg = type === 'application/zip' ? '批量下载成功' : '导出成功'
+      this.$message.success(msg)
     },
     exportToExcel() {
       this.listLoading = true
@@ -1686,7 +2199,7 @@ export default {
     },
     reset() {
       if (this.dialogTitle !== '查看') {
-        const refs = ['formRef1', 'formRef2', 'formRef3', 'formRef5', 'formRef6']
+        const refs = ['formRef1', 'formRef2', 'formRef3', 'formRef4', 'formRef5', 'formRef6']
         refs.forEach(refName => {
           const formRef = this.$refs[refName]
           if (formRef && typeof formRef.resetFields === 'function') {
@@ -1694,6 +2207,9 @@ export default {
           }
         })
       }
+      this.fileList = []
+      this.fileList2 = []
+      this.fileList3 = []
       this.formDialogVisible = false
       this.formData = this.clearObjectValues(this.formData)
       this.activeNames = ['1']
@@ -1742,7 +2258,12 @@ export default {
      * 新增或编辑提交操作
      */
     addOrEditSubmit() {
-      const refs = ['formRef1', 'formRef2', 'formRef3', 'formRef5', 'formRef6']
+      if (this.uploading || this.uploading2 || this.uploading3) {
+        this.$message.warning('请等待文件上传完成后再提交')
+        return
+      }
+
+      const refs = ['formRef1', 'formRef2', 'formRef3', 'formRef4', 'formRef5', 'formRef6']
       const promises = refs.map(refName =>
         new Promise(resolve => {
           this.$refs[refName].validate(valid => {
@@ -1759,6 +2280,12 @@ export default {
           const data = this.formatDateTimeFieldsForObject(this.formData)
           if (this.dialogTitle === '编辑') {
             data.row_vision = this.rowVision
+          }
+          if (!data.test_report_two) {
+            data.test_report_two = []
+          }
+          if (!data.test_report_three) {
+            data.test_report_three = []
           }
           console.log(data, 'data')
           saveOrUpdateData({ data, id: this.currentEditID }).then(async(response) => {
@@ -1790,9 +2317,14 @@ export default {
       try {
         const response = await getExcelHeader()
         console.log(response, '获取表头')
+        const arr = ['test_report', 'test_report_two', 'test_report_three']
         this.tableHeaderList = response.data
         this.formData = response.data.reduce((obj, item) => {
-          obj[item.name] = ''
+          if (arr.includes(item.name)) {
+            obj[item.name] = []
+          } else {
+            obj[item.name] = ''
+          }
           return obj
         }, {})
       } catch (error) {
@@ -1933,6 +2465,31 @@ export default {
         })
         .catch(() => {})
     },
+    /**
+     * 处理格式：将 row 中的文件数据格式化为 el-upload 所需的 fileList 结构
+     */
+    fileListFormatFormData(row) {
+      // 格式化单个文件字段为 { name, url, status }
+      const formatFileList = (data) => {
+        if (!data) return []
+        const list = Array.isArray(data) ? data : [data]
+        return list.map(item => ({
+          name: item.filename,
+          url: item.file_path,
+          status: 'success'
+        }))
+      }
+
+      // 分别赋值
+      this.fileList = formatFileList(row.test_report)
+      this.fileList2 = formatFileList(row.test_report_two)
+      this.fileList3 = formatFileList(row.test_report_three)
+    },
+    /**
+     * 处理对话框点击事件
+     * @param title 对话框标题
+     * @param row
+     */
     handleClick(title, row) {
       console.log(row)
       this.dialogTitle = title
@@ -1941,13 +2498,18 @@ export default {
         this.disabled = false
         this.currentEditID = row.id
         this.rowVision = row.row_vision
+        this.fileListFormatFormData(row)
       } else if (title === '查看') {
         this.assignSameKeys(row)
+        this.fileListFormatFormData(row)
         this.disabled = true
       } else {
         this.disabled = false
         this.currentEditID = null
         this.rowVision = null
+        this.fileList = []
+        this.fileList2 = []
+        this.fileList3 = []
       }
       this.formDialogVisible = true
     },
@@ -1963,21 +2525,44 @@ export default {
       params.page = val
       await this.fetchExcelData(params)
     },
+    getString(names) {
+      if (!names || names.length === 0) {
+        return ''
+      }
+      return names.map(item => item.filename)
+    },
     /**
      *
      * @param source 目标源数据
      */
     assignSameKeys(source) {
+      const arrayFields = ['test_report', 'test_report_two', 'test_report_three']
+
       for (const key in source) {
         if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
-          if (!source[key] && source[key] !== 0) {
+          const value = source[key]
+          // 如果是数组字段，直接赋值，不 toString
+          if (arrayFields.includes(key)) {
+            this.formData[key] = Array.isArray(value) ? value : (value ? [value] : [])
+          } else if (!value && value !== 0) {
             this.formData[key] = ''
           } else {
-            this.formData[key] = source[key].toString()
+            this.formData[key] = value.toString()
           }
         }
       }
     }
+    // assignSameKeys(source) {
+    //   for (const key in source) {
+    //     if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
+    //       if (!source[key] && source[key] !== 0) {
+    //         this.formData[key] = ''
+    //       } else {
+    //         this.formData[key] = source[key].toString()
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
 </script>
@@ -2000,6 +2585,7 @@ export default {
     }
 
     .el-table {
+      width: 100%;
       margin-top: 20px;
 
       .line-clamp-2 {

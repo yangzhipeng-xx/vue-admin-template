@@ -384,7 +384,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="DTSE(开发)" label-width="87px">
+                <el-form-item label="DTSE(开发)" label-width="87px" prop="dtse_develop">
                   <el-input v-model="formData.dtse_develop" :disabled="disabled" placeholder="DTSE(开发)" />
                 </el-form-item>
               </el-col>
@@ -756,7 +756,8 @@ export default {
         test_sys_network: [{ required: true, message: '必填项', trigger: 'blur' }],
         description: [{ required: true, message: '必填项', trigger: 'blur' }],
         problem_first_found_time: [{ required: true, message: '必填项', trigger: 'blur' }],
-        found_person: [{ required: true, message: '必填项', trigger: 'blur' }]
+        found_person: [{ required: true, message: '必填项', trigger: 'blur' }],
+        dtse_develop: [{ required: true, message: '必填项', trigger: 'blur' }]
       },
       rules3: {
         problem_close_date: [{ required: true, message: '必填项', trigger: 'blur' }]

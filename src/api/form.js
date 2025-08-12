@@ -74,3 +74,20 @@ export function saveHeaderConfig(data) {
     }
   })
 }
+
+export function uploadFiles(data) {
+  return request({
+    url: '/tools/excel/upload_files',
+    method: 'post',
+    data
+  })
+}
+
+export function downloadFiles(data) {
+  return request({
+    url: '/tools/excel/download_files',
+    method: 'post',
+    data,
+    responseType: 'blob'
+  })
+}
