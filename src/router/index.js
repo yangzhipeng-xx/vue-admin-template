@@ -80,6 +80,12 @@ export const asyncRoutes = [
         name: 'Report',
         component: () => import('@/views/dashboard/TestWeeklyReport.vue'),
         meta: { title: '测试周报', icon: 'dashboard' }
+      },
+      {
+        path: 'briefing',
+        name: 'Briefing',
+        component: () => import('@/views/dashboard/TestWorkBriefing.vue'),
+        meta: { title: '测试工作简报', icon: 'dashboard' }
       }
     ]
   },

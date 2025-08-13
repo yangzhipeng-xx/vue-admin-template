@@ -3,6 +3,7 @@ export const ASYNC_ROUTES = [
   { name: '大屏投屏', id: 'W1001' },
   { name: '投屏配置', id: 'W1002' },
   { name: '测试周报', id: 'W1003' },
+  { name: '测试工作简报', id: 'W1004' },
   { name: '计划与进展', id: 'W11' },
   { name: '认证测试', id: 'W12' },
   { name: '问题跟踪表', id: 'W1201' },
@@ -15,6 +16,7 @@ export const ROUTE_MAP = {
   'W10,W1001': '/dashboard/index',
   'W10,W1002': '/dashboard/config',
   'W10,W1003': '/dashboard/report',
+  'W10,W1004': '/dashboard/briefing',
   'W12,W1201': '/certification/problem',
   'W12,W1202': '/certification/exempt'
 }

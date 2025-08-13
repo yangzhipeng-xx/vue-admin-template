@@ -58,7 +58,8 @@ export default {
   overflow: hidden;
 }
 .responsive-img {
-  max-width: 100%;
+  width: 1920px;
+  // max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
